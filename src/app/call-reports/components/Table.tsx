@@ -6,14 +6,13 @@ import FilterButton from './Filter';
 import { toast } from 'sonner';
 import fetchData from '@/utility/fetchdata';
 import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
-import CallingStatusTd from '@/components/ui/ExtendableTd';
-import Linkify from '@/components/ui/Linkify';
+import CallingStatusTd from '@/components/ExtendableTd';
+import Linkify from '@/components/Linkify';
 import DeleteButton from './Delete';
 import EditButton from './Edit';
 import countDaysSinceLastCall from '@/utility/countdayspassed';
 import { useSession } from 'next-auth/react';
 import moment from 'moment-timezone';
-import FollowupDoneButton from './FollowupDone';
 
 type ReportsState = {
   pagination: {
@@ -71,10 +70,7 @@ const Table = () => {
           page,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          followupDone: false,
-          marketerName: session?.user?.real_name,
-        }),
+        body: JSON.stringify({ marketerName: session?.user?.real_name }),
       };
 
       let response = await fetchData(url, options);
@@ -109,7 +105,6 @@ const Table = () => {
         },
         body: JSON.stringify({
           ...filters,
-          followupDone: false,
           marketerName: session?.user?.real_name,
         }),
       };
@@ -333,41 +328,6 @@ const Table = () => {
     }
   }
 
-  async function doneFollowup(reportId: string, reqBy: string) {
-    try {
-      let url: string =
-        process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=done-followup';
-      let options: {} = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: reportId,
-          req_by: reqBy,
-        }),
-      };
-
-      let response = await fetchData(url, options);
-
-      if (response.ok) {
-        if (!isFiltered) await getAllReports();
-        else await getAllReportsFiltered();
-
-        toast.success(
-          'The followup status has been marked as done successfully',
-        );
-      } else {
-        toast.error(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(
-        'An error occurred while changing the status of the followup',
-      );
-    }
-  }
-
   useEffect(() => {
     getAllReports();
   }, []);
@@ -419,7 +379,26 @@ const Table = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-end mb-4 gap-2">
+      <div className="flex flex-row justify-between mb-4 gap-2">
+        <button
+          onClick={() =>
+            router.push(process.env.NEXT_PUBLIC_BASE_URL + '/make-a-call')
+          }
+          className="flex items-center gap-2 rounded-md bg-primary hover:opacity-90 hover:ring-4 hover:ring-primary transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2"
+        >
+          Add new report
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+          </svg>
+        </button>
+
         <div className="items-center flex gap-2">
           <div className="inline-flex rounded-md" role="group">
             <button
@@ -597,10 +576,6 @@ const Table = () => {
                             />
                             <DeleteButton
                               submitHandler={deleteReport}
-                              reportData={item}
-                            />
-                            <FollowupDoneButton
-                              submitHandler={doneFollowup}
                               reportData={item}
                             />
                           </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '@/components/Header';
-import ViewNotice from '@/components/Notices/Notice/View';
+import ViewNotice from '../components/Notice/View';
 
 const NoticeView = ({ params }: { params: { notice_no: string } }) => {
   const { notice_no } = params;

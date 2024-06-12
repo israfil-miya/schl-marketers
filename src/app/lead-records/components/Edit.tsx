@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react';
-
 import { useSession } from 'next-auth/react';
-
-import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
 
 interface PropsType {
   reportData: { [key: string]: any };
   isLoading: boolean;
   submitHandler: (
-    reportId: string,
-    isRecall: boolean,
-    reportData: { [key: string]: any },
+    originalReportData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
-    setIsRecall: React.Dispatch<React.SetStateAction<boolean>>,
   ) => Promise<void>;
 }
 
@@ -21,7 +15,6 @@ const EditButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: session } = useSession();
   const [editedBy, setEditedBy] = useState<string>('');
-  const [isRecall, setIsRecall] = useState<boolean>(false);
 
   const [editedData, setEditedData] = useState<{ [key: string]: any }>({
     ...props.reportData,
@@ -43,9 +36,7 @@ const EditButton: React.FC<PropsType> = (props) => {
     const { name, type, value } = e.target;
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
-
       if (name == 'followup_done') {
-        console.log('Hi here');
         setEditedData((prevData) => ({
           ...prevData,
           followup_done: !checked, // to mark as pending, followup_done should be false when checked
@@ -56,12 +47,10 @@ const EditButton: React.FC<PropsType> = (props) => {
           [name]: checked,
         }));
       }
-
       if (!checked && name === 'is_prospected')
         setEditedData((prevData) => ({
           ...prevData,
           prospect_status: '',
-          followup_done: false,
         }));
     } else {
       setEditedData((prevData) => ({
@@ -77,7 +66,6 @@ const EditButton: React.FC<PropsType> = (props) => {
         disabled={props.isLoading}
         onClick={() => {
           setIsOpen(true);
-          setIsRecall(false);
           setEditedBy(props.reportData.updated_by || '');
         }}
         className="items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-2 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white p-2"
@@ -107,7 +95,7 @@ const EditButton: React.FC<PropsType> = (props) => {
         >
           <header className="flex items-center align-middle justify-between px-4 py-2 border-b rounded-t">
             <h3 className="text-gray-900 text-lg lg:text-xl font-semibold dark:text-white uppercase">
-              Edit Report
+              Edit Lead
             </h3>
             <button
               onClick={() => setIsOpen(false)}
@@ -320,81 +308,58 @@ const EditButton: React.FC<PropsType> = (props) => {
                 />
               </div>
 
-              <div>
-                <label
-                  className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2"
-                  htmlFor="grid-last-name"
-                >
-                  Calling Date History
-                  <span className="cursor-pointer has-tooltip">
-                    &#9432;
-                    <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
-                      Chan&apos;t change directly
-                    </span>
-                  </span>
-                </label>
-                <textarea
-                  rows={5}
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  name="calling_date_history"
-                  value={editedData.calling_date_history
-                    ?.map((date: string) => `${convertToDDMMYYYY(date)}`)
-                    .join('\n')}
-                  // onChange={handleChange}
-                  disabled
-                />
-              </div>
-
-              <div>
-                <label
-                  className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2"
-                  htmlFor="grid-password"
-                >
-                  Linkedin
-                  <span className="cursor-pointer has-tooltip">
-                    &#9432;
-                    <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
-                      Separated by space
-                    </span>
-                  </span>
-                </label>
-                <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  type="text"
-                  name="linkedin"
-                  value={editedData.linkedin}
-                  onChange={handleChange}
-                />
-              </div>
-
-              {editedData.is_prospected && (
+              <div className="flex flex-col gap-2">
                 <div>
                   <label
-                    className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2"
-                    htmlFor="grid-last-name"
+                    className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2"
+                    htmlFor="grid-password"
                   >
-                    Prospect Status
+                    Linkedin
+                    <span className="cursor-pointer has-tooltip">
+                      &#9432;
+                      <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
+                        Separated by space
+                      </span>
+                    </span>
                   </label>
-                  <select
-                    value={editedData.prospect_status}
-                    onChange={(e) =>
-                      setEditedData((prevData) => ({
-                        ...prevData,
-                        prospect_status: e.target.value,
-                      }))
-                    }
-                    defaultValue={''}
-                    required
+                  <input
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  >
-                    <option value={''} className="text-gray-400">
-                      Select prospect status
-                    </option>
-                    <option value="high_interest">High Interest</option>
-                    <option value="low_interest">Low Interest</option>
-                  </select>
+                    type="text"
+                    name="linkedin"
+                    value={editedData.linkedin}
+                    onChange={handleChange}
+                  />
                 </div>
-              )}
+
+                {editedData.is_prospected && (
+                  <div>
+                    <label
+                      className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2"
+                      htmlFor="grid-last-name"
+                    >
+                      Prospect Status
+                    </label>
+                    <select
+                      value={editedData.prospect_status}
+                      onChange={(e) =>
+                        setEditedData((prevData) => ({
+                          ...prevData,
+                          prospect_status: e.target.value,
+                        }))
+                      }
+                      defaultValue={''}
+                      required
+                      className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option value={''} className="text-gray-400">
+                        Select prospect status
+                      </option>
+                      <option value="high_interest">High Interest</option>
+                      <option value="low_interest">Low Interest</option>
+                    </select>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="checkboxes flex flex-col sm:flex-row gap-4 mt-4">
@@ -441,20 +406,6 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Followup Pending
                 </label>
               </div>
-
-              <div className="flex gap-2 items-center">
-                <input
-                  name="is_recall"
-                  checked={isRecall}
-                  onChange={() => setIsRecall(!isRecall)}
-                  id="recall-checkbox"
-                  type="checkbox"
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor="recall-checkbox" className="uppercase ">
-                  Recall
-                </label>
-              </div>
             </div>
           </div>
           <footer className="flex items-center px-4 py-2 border-t justify-between gap-6 border-gray-200 rounded-b">
@@ -477,12 +428,9 @@ const EditButton: React.FC<PropsType> = (props) => {
               <button
                 onClick={() => {
                   props.submitHandler(
-                    props.reportData?._id,
-                    isRecall,
                     props.reportData,
                     editedData,
                     setEditedData,
-                    setIsRecall,
                   );
                   setIsOpen(false);
                 }}

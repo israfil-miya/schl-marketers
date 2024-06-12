@@ -112,7 +112,6 @@ const Form: React.FC<propsType> = (props) => {
         setReportData((prevData) => ({
           ...prevData,
           prospectingStatus: '',
-          followupDone: false,
         }));
     } else {
       setReportData((prevData) => ({

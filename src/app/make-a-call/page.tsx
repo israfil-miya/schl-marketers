@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import React from 'react';
-import InputForm from '@/components/MakeACall/Form';
+import InputForm from './components/Form';
 import moment from 'moment-timezone';
 import { Suspense } from 'react';
 

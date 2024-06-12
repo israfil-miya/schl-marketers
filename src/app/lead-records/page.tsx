@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '@/components/Header';
-import Table from '@/components/LeadRecords/Table';
+import Table from './components/Table';
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth';
 

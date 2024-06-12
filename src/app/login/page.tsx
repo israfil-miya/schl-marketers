@@ -1,7 +1,7 @@
 import React from 'react';
 import { auth } from '@/auth';
 
-import Login from '@/components/Login';
+import Login from './components/Login';
 
 import { redirect } from 'next/navigation';
 

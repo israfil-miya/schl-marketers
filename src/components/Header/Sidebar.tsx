@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Drawer from '../ui/Drawer';
+import Drawer from '../Drawer';
 import cn from '@/utility/cn';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
