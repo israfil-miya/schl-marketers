@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import React from 'react';
 import InputForm from '@/components/MakeACall/Form';
 import moment from 'moment-timezone';
+import { Suspense } from 'react';
 
 const MakeACallPage = () => {
   let todayDate: string = moment().format('YYYY-MM-DD');
@@ -13,7 +14,9 @@ const MakeACallPage = () => {
         <h1 className="text-2xl font-semibold text-left mb-4 underline underline-offset-4 uppercase">
           Add a new report
         </h1>
-        <InputForm todayDate={todayDate} />
+        <Suspense fallback={<p className="text-center">Loading...</p>}>
+          <InputForm todayDate={todayDate} />
+        </Suspense>
       </div>
     </>
   );

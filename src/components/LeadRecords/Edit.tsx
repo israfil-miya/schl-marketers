@@ -130,7 +130,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   <span className="cursor-pointer has-tooltip">
                     &#9432;
                     <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
-                      Can't change
+                      Can&apos;t change
                     </span>
                   </span>
                 </label>
