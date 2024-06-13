@@ -418,6 +418,23 @@ const EditButton: React.FC<PropsType> = (props) => {
 
               <div className="flex gap-2 items-center">
                 <input
+                  name="permanent_client"
+                  checked={editedData.permanent_client}
+                  onChange={handleChange}
+                  id="permanent-client-checkbox"
+                  type="checkbox"
+                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <label
+                  htmlFor="permanent-client-checkbox"
+                  className="uppercase "
+                >
+                  Permanent Client
+                </label>
+              </div>
+
+              <div className="flex gap-2 items-center">
+                <input
                   name="is_recall"
                   checked={isRecall}
                   onChange={() => setIsRecall(!isRecall)}
