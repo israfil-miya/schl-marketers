@@ -379,12 +379,12 @@ const Table = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-between mb-4 gap-2">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 gap-2">
         <button
           onClick={() =>
             router.push(process.env.NEXT_PUBLIC_BASE_URL + '/make-a-call')
           }
-          className="flex items-center gap-2 rounded-md bg-primary hover:opacity-90 hover:ring-4 hover:ring-primary transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2"
+          className="flex justify-between items-center gap-2 rounded-md bg-primary hover:opacity-90 hover:ring-4 hover:ring-primary transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2"
         >
           Add new report
           <svg
@@ -423,7 +423,7 @@ const Table = () => {
             </button>
             <button
               disabled={true}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium border"
+              className="hidden sm:visible sm:inline-flex items-center px-4 py-2 text-sm font-medium border"
             >
               <label>
                 Page <b>{reports?.items?.length !== 0 ? page : 0}</b> of{' '}
@@ -468,6 +468,7 @@ const Table = () => {
             submitHandler={getAllReportsFiltered}
             setFilters={setFilters}
             filters={filters}
+            className="w-full justify-between sm:w-auto"
           />
         </div>
       </div>

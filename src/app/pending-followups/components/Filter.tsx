@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import cn from '@/utility/cn';
 
 interface PropsType {
+  className?: string;
   submitHandler: () => void;
   filters: {
     country: string;
@@ -49,7 +51,6 @@ const SideNavBar: React.FC<PropsType> = (props) => {
       category: '',
       fromDate: '',
       toDate: '',
-      // marketerName: '',
       test: false,
       prospect: false,
       generalSearchString: '',
@@ -61,7 +62,10 @@ const SideNavBar: React.FC<PropsType> = (props) => {
       <button
         onClick={() => setIsOpen(true)}
         type="button"
-        className="flex items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-4 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2"
+        className={cn(
+          `flex items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-4 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2`,
+          props.className,
+        )}
       >
         Filter
         <svg

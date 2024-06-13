@@ -419,7 +419,7 @@ const Table = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-end mb-4 gap-2">
+      <div className="flex flex-col justify-center sm:flex-row sm:justify-end mb-4 gap-2">
         <div className="items-center flex gap-2">
           <div className="inline-flex rounded-md" role="group">
             <button
@@ -444,7 +444,7 @@ const Table = () => {
             </button>
             <button
               disabled={true}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium border"
+              className="hidden sm:visible sm:inline-flex items-center px-4 py-2 text-sm font-medium border"
             >
               <label>
                 Page <b>{reports?.items?.length !== 0 ? page : 0}</b> of{' '}
@@ -489,6 +489,7 @@ const Table = () => {
             submitHandler={getAllReportsFiltered}
             setFilters={setFilters}
             filters={filters}
+            className="w-full justify-between sm:w-auto"
           />
         </div>
       </div>
