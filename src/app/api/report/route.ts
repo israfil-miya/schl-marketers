@@ -9,6 +9,7 @@ import { auth } from '@/auth';
 import { headers } from 'next/headers';
 import Approval from '@/models/Approvals';
 import getTodayDate from '@/utility/gettodaysdate';
+import moment from 'moment-timezone';
 
 async function handleEditReport(req: Request): Promise<{
   data: string | Object;
@@ -392,6 +393,63 @@ async function handleDoneFollowup(req: Request): Promise<{
   }
 }
 
+async function handleGetReportsCount(req: Request): Promise<{
+  data: string | Object;
+  status: number;
+}> {
+  try {
+    const marketerName: string = headers().get('name') || '';
+    const now = moment.tz('UTC');
+    const startDate = now
+      .clone()
+      .subtract(12, 'months')
+      .startOf('month')
+      .toDate();
+    const endDate = now.clone().endOf('month').toDate();
+    interface ReportCount {
+      [key: string]: number;
+    }
+
+    // Fetch reports from the database
+    const reports = await Report.find({
+      marketer_name: marketerName,
+      createdAt: { $gte: startDate, $lte: endDate },
+    }).exec();
+
+    // Initialize the result object with zero counts
+    const result: ReportCount = {};
+    for (let i = 0; i <= 12; i++) {
+      const month = now
+        .clone()
+        .subtract(i, 'months')
+        .format('MMMM_YYYY')
+        .toLowerCase();
+      result[month] = 0;
+    }
+
+    // Count the reports per month
+    reports.forEach((report) => {
+      const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
+      if (result.hasOwnProperty(month)) {
+        result[month] += 1;
+      }
+    });
+
+    // Sort the result by month
+    const sortedResult: ReportCount = Object.keys(result)
+      .sort((a, b) => moment(a, 'MMMM_YYYY').diff(moment(b, 'MMMM_YYYY')))
+      .reduce((obj: ReportCount, key: string) => {
+        obj[key] = result[key];
+        return obj;
+      }, {});
+
+    return { data: sortedResult, status: 200 };
+  } catch (e) {
+    console.error(e);
+    return { data: 'An error occurred', status: 500 };
+  }
+}
+
 export async function POST(req: Request) {
   let res: { data: string | Object; status: number };
 
@@ -423,6 +481,9 @@ export async function GET(req: Request) {
   switch (getQuery(req).action) {
     case 'get-recall-count':
       res = await handleGetRecallCount(req);
+      return NextResponse.json(res.data, { status: res.status });
+    case 'get-reports-count':
+      res = await handleGetReportsCount(req);
       return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });
