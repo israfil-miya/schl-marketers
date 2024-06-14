@@ -456,8 +456,6 @@ async function handleGetReportsCount(req: Request): Promise<{
   }
 }
 
-export default handleGetReportsCount;
-
 export async function POST(req: Request) {
   let res: { data: string | Object; status: number };
 
