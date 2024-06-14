@@ -1,15 +1,17 @@
 import Header from '@/components/Header';
 import React from 'react';
+import Graphs from './components/Graphs';
+import { SessionProvider } from 'next-auth/react';
+import { auth } from '@/auth';
 
-const Statistics = () => {
+const Statistics = async () => {
+  const session = await auth();
   return (
     <>
       <Header />
-      <div className="flex items-center h-[80vh]">
-        <p className="font-light text-center ml-[20%] md:ml-[40%] lg:ml-[45%]">
-          This page is under development!
-        </p>
-      </div>
+      <SessionProvider session={session}>
+        <Graphs />
+      </SessionProvider>
     </>
   );
 };

@@ -394,30 +394,36 @@ async function handleDoneFollowup(req: Request): Promise<{
 }
 
 async function handleGetReportsCount(req: Request): Promise<{
-  data: string | Object;
+  data: string | Record<string, number>;
   status: number;
 }> {
   try {
-    const marketerName: string = headers().get('name') || '';
-    const now = moment.tz('UTC');
+    const marketerName: string = (headers().get('name') as string) || '';
+    console.log(marketerName);
+
+    const now = moment.tz('Asia/Dhaka');
     const startDate = now
       .clone()
       .subtract(12, 'months')
       .startOf('month')
       .toDate();
     const endDate = now.clone().endOf('month').toDate();
+
     interface ReportCount {
       [key: string]: number;
     }
 
-    // Fetch reports from the database
+    // Optimize the query with indexing and projections
     const reports = await Report.find({
       marketer_name: marketerName,
       createdAt: { $gte: startDate, $lte: endDate },
-    }).exec();
+    })
+      .select('createdAt')
+      .exec();
+
+    const result: ReportCount = {};
 
     // Initialize the result object with zero counts
-    const result: ReportCount = {};
     for (let i = 0; i <= 12; i++) {
       const month = now
         .clone()
@@ -449,6 +455,8 @@ async function handleGetReportsCount(req: Request): Promise<{
     return { data: 'An error occurred', status: 500 };
   }
 }
+
+export default handleGetReportsCount;
 
 export async function POST(req: Request) {
   let res: { data: string | Object; status: number };
