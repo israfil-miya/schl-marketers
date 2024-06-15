@@ -174,25 +174,9 @@ async function handleGetAllReports(req: Request): Promise<{
       is_prospected?: boolean;
       is_lead?: boolean;
       followup_done?: boolean;
-      calling_date_history?: {
-        $elemMatch: {
-          $gte?: string;
-          $lte?: string;
-        };
-      };
-      $or?: [
-        { country: { $regex: string; $options: string } },
-        { company_name: { $regex: string; $options: string } },
-        { category: { $regex: string; $options: string } },
-        { marketer_name: { $regex: string; $options: string } },
-        { designation: { $regex: string; $options: string } },
-        { website: { $regex: string; $options: string } },
-        { contact_person: { $regex: string; $options: string } },
-        { contact_number: { $regex: string; $options: string } },
-        { calling_status: { $regex: string; $options: string } },
-        { email_address: { $regex: string; $options: string } },
-        { linkedin: { $regex: string; $options: string } },
-      ];
+      permanent_client?: boolean;
+      calling_date_history?: { [key: string]: any };
+      $or?: { [key: string]: { $regex: string; $options: string } }[];
     };
 
     let filters = await req.json();
@@ -209,6 +193,8 @@ async function handleGetAllReports(req: Request): Promise<{
       generalSearchString,
       onlyLead,
       followupDone,
+      permanentClient,
+      staleClient,
     } = filters;
 
     let query: Query = {};
@@ -219,21 +205,60 @@ async function handleGetAllReports(req: Request): Promise<{
     if (category) query.category = { $regex: category, $options: 'i' };
     if (marketerName)
       query.marketer_name = { $regex: marketerName, $options: 'i' };
+
+    // If 'test' is true, filter to show only records where 'is_test' is true.
+    // If 'test' is false or undefined, show all records regardless of 'is_test' value.
+    // If 'prospect' is true, filter to show only records where 'is_prospected' is true.
+    // If 'prospect' is false or undefined, show all records regardless of 'is_prospected' value.
+    // If 'permanentClient' is true, filter to show only records where 'permanent_client' is true.
+    // If 'permanentClient' is false or undefined, show all records regardless of 'permanent_client' value.
     if (test) query.is_test = test;
     if (prospect) query.is_prospected = prospect;
+    if (permanentClient) query.permanent_client = permanentClient;
+
+    // If 'followupDone' is neither undefined nor null, set 'query.followup_done' to the value of 'followupDone'.
     if (followupDone !== undefined && followupDone !== null)
       query.followup_done = followupDone;
+
+    // Set 'query.is_lead' to the value of 'onlyLead' if it's true; otherwise, set it to false.
     query.is_lead = onlyLead || false;
 
-    query.calling_date_history = { $elemMatch: {} };
+    if (staleClient) {
+      // Calculate the date 2 months ago from today
+      let twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');
 
-    if (fromDate) {
-      query.calling_date_history.$elemMatch.$gte = fromDate;
+      if (!query.calling_date_history) {
+        query.calling_date_history = {};
+      }
+
+      if (!query.calling_date_history.$not) {
+        query.calling_date_history.$not = {};
+      }
+
+      query.calling_date_history.$not.$elemMatch = {
+        $gte: twoMonthsAgo,
+      };
     }
-    if (toDate) {
-      query.calling_date_history.$elemMatch.$lte = toDate;
+
+    if (fromDate || toDate) {
+      if (!query.calling_date_history) {
+        query.calling_date_history = {};
+      }
+
+      if (!query.calling_date_history.$elemMatch) {
+        query.calling_date_history.$elemMatch = {};
+      }
+
+      if (fromDate) {
+        query.calling_date_history.$elemMatch.$gte = fromDate;
+      }
+      if (toDate) {
+        query.calling_date_history.$elemMatch.$lte = toDate;
+      }
     }
-    if (!fromDate && !toDate) {
+
+    // If there are no filters applied, clean up the query
+    if (!fromDate && !toDate && !staleClient) {
       delete query.calling_date_history;
     }
 
@@ -415,6 +440,7 @@ async function handleGetReportsCount(req: Request): Promise<{
 
     // Optimize the query with indexing and projections
     const reports = await Report.find({
+      is_lead: false,
       marketer_name: marketerName,
       createdAt: { $gte: startDate, $lte: endDate },
     })
@@ -472,68 +498,49 @@ async function handleGetClientConversionRates(req: Request): Promise<{
       .toDate();
     const endDate = now.clone().endOf('month').toDate();
 
-    interface ConversionRate {
+    interface ReportCount {
       [key: string]: number;
     }
 
     // Optimize the query with indexing and projections
     const reports = await Report.find({
+      is_lead: false,
+      permanent_client: true,
       marketer_name: marketerName,
       createdAt: { $gte: startDate, $lte: endDate },
     })
-      .select('createdAt permanent_client')
+      .select('createdAt')
       .exec();
 
-    const totalReportsPerMonth: Record<string, number> = {};
-    const permanentClientReportsPerMonth: Record<string, number> = {};
+    const result: ReportCount = {};
 
-    // Initialize the result objects with zero counts
+    // Initialize the result object with zero counts
     for (let i = 0; i <= 12; i++) {
       const month = now
         .clone()
         .subtract(i, 'months')
         .format('MMMM_YYYY')
         .toLowerCase();
-      totalReportsPerMonth[month] = 0;
-      permanentClientReportsPerMonth[month] = 0;
+      result[month] = 0;
     }
 
     // Count the reports per month
     reports.forEach((report) => {
       const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
-      if (totalReportsPerMonth.hasOwnProperty(month)) {
-        totalReportsPerMonth[month] += 1;
-        if (report.permanent_client) {
-          permanentClientReportsPerMonth[month] += 1;
-        }
-      }
-    });
-
-    // Calculate the conversion rate
-    const conversionRate: ConversionRate = {};
-    Object.keys(totalReportsPerMonth).forEach((month) => {
-      if (totalReportsPerMonth[month] > 0) {
-        conversionRate[month] = parseFloat(
-          (
-            (permanentClientReportsPerMonth[month] /
-              totalReportsPerMonth[month]) *
-            100
-          ).toFixed(1),
-        );
-      } else {
-        conversionRate[month] = 0;
+      if (result.hasOwnProperty(month)) {
+        result[month] += 1;
       }
     });
 
     // Sort the result by month
-    const sortedConversionRate: ConversionRate = Object.keys(conversionRate)
+    const sortedResult: ReportCount = Object.keys(result)
       .sort((a, b) => moment(a, 'MMMM_YYYY').diff(moment(b, 'MMMM_YYYY')))
-      .reduce((obj: ConversionRate, key: string) => {
-        obj[key] = conversionRate[key];
+      .reduce((obj: ReportCount, key: string) => {
+        obj[key] = result[key];
         return obj;
       }, {});
 
-    return { data: sortedConversionRate, status: 200 };
+    return { data: sortedResult, status: 200 };
   } catch (e) {
     console.error(e);
     return { data: 'An error occurred', status: 500 };
@@ -556,69 +563,49 @@ async function handleGetTestParticipationRates(req: Request): Promise<{
       .toDate();
     const endDate = now.clone().endOf('month').toDate();
 
-    interface ParticipationRate {
+    interface ReportCount {
       [key: string]: number;
     }
 
     // Optimize the query with indexing and projections
     const reports = await Report.find({
+      is_lead: false,
+      is_test: true,
       marketer_name: marketerName,
       createdAt: { $gte: startDate, $lte: endDate },
     })
-      .select('createdAt is_test')
+      .select('createdAt')
       .exec();
 
-    const totalReportsPerMonth: Record<string, number> = {};
-    const testGivenReportsPerMonth: Record<string, number> = {};
+    const result: ReportCount = {};
 
-    // Initialize the result objects with zero counts
+    // Initialize the result object with zero counts
     for (let i = 0; i <= 12; i++) {
       const month = now
         .clone()
         .subtract(i, 'months')
         .format('MMMM_YYYY')
         .toLowerCase();
-      totalReportsPerMonth[month] = 0;
-      testGivenReportsPerMonth[month] = 0;
+      result[month] = 0;
     }
 
     // Count the reports per month
     reports.forEach((report) => {
       const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
-      if (totalReportsPerMonth.hasOwnProperty(month)) {
-        totalReportsPerMonth[month] += 1;
-        if (report.is_test) {
-          testGivenReportsPerMonth[month] += 1;
-        }
-      }
-    });
-
-    // Calculate the test participation rate
-    const participationRate: ParticipationRate = {};
-    Object.keys(totalReportsPerMonth).forEach((month) => {
-      if (totalReportsPerMonth[month] > 0) {
-        participationRate[month] = parseFloat(
-          (
-            (testGivenReportsPerMonth[month] / totalReportsPerMonth[month]) *
-            100
-          ).toFixed(1),
-        );
-      } else {
-        participationRate[month] = 0;
+      if (result.hasOwnProperty(month)) {
+        result[month] += 1;
       }
     });
 
     // Sort the result by month
-    const sortedParticipationRate: ParticipationRate = Object.keys(
-      participationRate,
-    )
+    const sortedResult: ReportCount = Object.keys(result)
       .sort((a, b) => moment(a, 'MMMM_YYYY').diff(moment(b, 'MMMM_YYYY')))
-      .reduce((obj: ParticipationRate, key: string) => {
-        obj[key] = participationRate[key];
+      .reduce((obj: ReportCount, key: string) => {
+        obj[key] = result[key];
         return obj;
       }, {});
 
-    return { data: sortedParticipationRate, status: 200 };
+    return { data: sortedResult, status: 200 };
   } catch (e) {
     console.error(e);
     return { data: 'An error occurred', status: 500 };
