@@ -456,6 +456,175 @@ async function handleGetReportsCount(req: Request): Promise<{
   }
 }
 
+async function handleGetClientConversionRates(req: Request): Promise<{
+  data: string | Record<string, number>;
+  status: number;
+}> {
+  try {
+    const marketerName: string = (headers().get('name') as string) || '';
+    console.log(marketerName);
+
+    const now = moment.tz('Asia/Dhaka');
+    const startDate = now
+      .clone()
+      .subtract(12, 'months')
+      .startOf('month')
+      .toDate();
+    const endDate = now.clone().endOf('month').toDate();
+
+    interface ConversionRate {
+      [key: string]: number;
+    }
+
+    // Optimize the query with indexing and projections
+    const reports = await Report.find({
+      marketer_name: marketerName,
+      createdAt: { $gte: startDate, $lte: endDate },
+    })
+      .select('createdAt permanent_client')
+      .exec();
+
+    const totalReportsPerMonth: Record<string, number> = {};
+    const permanentClientReportsPerMonth: Record<string, number> = {};
+
+    // Initialize the result objects with zero counts
+    for (let i = 0; i <= 12; i++) {
+      const month = now
+        .clone()
+        .subtract(i, 'months')
+        .format('MMMM_YYYY')
+        .toLowerCase();
+      totalReportsPerMonth[month] = 0;
+      permanentClientReportsPerMonth[month] = 0;
+    }
+
+    // Count the reports per month
+    reports.forEach((report) => {
+      const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
+      if (totalReportsPerMonth.hasOwnProperty(month)) {
+        totalReportsPerMonth[month] += 1;
+        if (report.permanent_client) {
+          permanentClientReportsPerMonth[month] += 1;
+        }
+      }
+    });
+
+    // Calculate the conversion rate
+    const conversionRate: ConversionRate = {};
+    Object.keys(totalReportsPerMonth).forEach((month) => {
+      if (totalReportsPerMonth[month] > 0) {
+        conversionRate[month] = parseFloat(
+          (
+            (permanentClientReportsPerMonth[month] /
+              totalReportsPerMonth[month]) *
+            100
+          ).toFixed(1),
+        );
+      } else {
+        conversionRate[month] = 0;
+      }
+    });
+
+    // Sort the result by month
+    const sortedConversionRate: ConversionRate = Object.keys(conversionRate)
+      .sort((a, b) => moment(a, 'MMMM_YYYY').diff(moment(b, 'MMMM_YYYY')))
+      .reduce((obj: ConversionRate, key: string) => {
+        obj[key] = conversionRate[key];
+        return obj;
+      }, {});
+
+    return { data: sortedConversionRate, status: 200 };
+  } catch (e) {
+    console.error(e);
+    return { data: 'An error occurred', status: 500 };
+  }
+}
+
+async function handleGetTestParticipationRates(req: Request): Promise<{
+  data: string | Record<string, number>;
+  status: number;
+}> {
+  try {
+    const marketerName: string = (headers().get('name') as string) || '';
+    console.log(marketerName);
+
+    const now = moment.tz('Asia/Dhaka');
+    const startDate = now
+      .clone()
+      .subtract(12, 'months')
+      .startOf('month')
+      .toDate();
+    const endDate = now.clone().endOf('month').toDate();
+
+    interface ParticipationRate {
+      [key: string]: number;
+    }
+
+    // Optimize the query with indexing and projections
+    const reports = await Report.find({
+      marketer_name: marketerName,
+      createdAt: { $gte: startDate, $lte: endDate },
+    })
+      .select('createdAt is_test')
+      .exec();
+
+    const totalReportsPerMonth: Record<string, number> = {};
+    const testGivenReportsPerMonth: Record<string, number> = {};
+
+    // Initialize the result objects with zero counts
+    for (let i = 0; i <= 12; i++) {
+      const month = now
+        .clone()
+        .subtract(i, 'months')
+        .format('MMMM_YYYY')
+        .toLowerCase();
+      totalReportsPerMonth[month] = 0;
+      testGivenReportsPerMonth[month] = 0;
+    }
+
+    // Count the reports per month
+    reports.forEach((report) => {
+      const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
+      if (totalReportsPerMonth.hasOwnProperty(month)) {
+        totalReportsPerMonth[month] += 1;
+        if (report.is_test) {
+          testGivenReportsPerMonth[month] += 1;
+        }
+      }
+    });
+
+    // Calculate the test participation rate
+    const participationRate: ParticipationRate = {};
+    Object.keys(totalReportsPerMonth).forEach((month) => {
+      if (totalReportsPerMonth[month] > 0) {
+        participationRate[month] = parseFloat(
+          (
+            (testGivenReportsPerMonth[month] / totalReportsPerMonth[month]) *
+            100
+          ).toFixed(1),
+        );
+      } else {
+        participationRate[month] = 0;
+      }
+    });
+
+    // Sort the result by month
+    const sortedParticipationRate: ParticipationRate = Object.keys(
+      participationRate,
+    )
+      .sort((a, b) => moment(a, 'MMMM_YYYY').diff(moment(b, 'MMMM_YYYY')))
+      .reduce((obj: ParticipationRate, key: string) => {
+        obj[key] = participationRate[key];
+        return obj;
+      }, {});
+
+    return { data: sortedParticipationRate, status: 200 };
+  } catch (e) {
+    console.error(e);
+    return { data: 'An error occurred', status: 500 };
+  }
+}
+
 export async function POST(req: Request) {
   let res: { data: string | Object; status: number };
 
@@ -490,6 +659,12 @@ export async function GET(req: Request) {
       return NextResponse.json(res.data, { status: res.status });
     case 'get-reports-count':
       res = await handleGetReportsCount(req);
+      return NextResponse.json(res.data, { status: res.status });
+    case 'get-client-conversion-rates':
+      res = await handleGetClientConversionRates(req);
+      return NextResponse.json(res.data, { status: res.status });
+    case 'get-test-participation-rates':
+      res = await handleGetTestParticipationRates(req);
       return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });

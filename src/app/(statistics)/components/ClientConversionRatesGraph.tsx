@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import LineChart from '@/components/Charts/Line.chart';
 
-interface ReportsCountGraphProps {
+interface ClientConversionRatesGraphProps {
   isLoading: boolean;
   data: { [key: string]: number };
 }
@@ -21,7 +21,7 @@ interface LineChartData {
   }[];
 }
 
-const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
+const ClientConversionRatesGraph: React.FC<ClientConversionRatesGraphProps> = ({
   isLoading,
   data,
 }) => {
@@ -41,7 +41,7 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
       labels: dataLabels,
       datasets: [
         {
-          label: 'Report Count',
+          label: 'Client Conversion Rate',
           data: Object.values(data),
           backgroundColor: '#466cdb',
           borderColor: 'black',
@@ -61,4 +61,4 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
   );
 };
 
-export default ReportsCountGraph;
+export default ClientConversionRatesGraph;

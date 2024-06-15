@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import LineChart from '@/components/Charts/Line.chart';
 
-interface ReportsCountGraphProps {
+interface TestParticipationRatesGraphProps {
   isLoading: boolean;
   data: { [key: string]: number };
 }
@@ -21,10 +21,9 @@ interface LineChartData {
   }[];
 }
 
-const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
-  isLoading,
-  data,
-}) => {
+const TestParticipationRatesGraph: React.FC<
+  TestParticipationRatesGraphProps
+> = ({ isLoading, data }) => {
   const [graphData, setGraphData] = useState<LineChartData>({
     labels: [],
     datasets: [],
@@ -41,7 +40,7 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
       labels: dataLabels,
       datasets: [
         {
-          label: 'Report Count',
+          label: 'Test Participation Rate',
           data: Object.values(data),
           backgroundColor: '#466cdb',
           borderColor: 'black',
@@ -61,4 +60,4 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
   );
 };
 
-export default ReportsCountGraph;
+export default TestParticipationRatesGraph;
