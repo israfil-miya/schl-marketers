@@ -13,7 +13,6 @@ import EditButton from './Edit';
 import countDaysSinceLastCall from '@/utility/countdayspassed';
 import { useSession } from 'next-auth/react';
 import moment from 'moment-timezone';
-import FollowupDoneButton from './FollowupDone';
 
 type ReportsState = {
   pagination: {
@@ -52,7 +51,7 @@ const Table = () => {
     fromDate: '',
     toDate: '',
     test: false,
-    prospect: false,
+    prospectStatus: '',
     generalSearchString: '',
   });
 
@@ -72,7 +71,7 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          followupDone: false,
+          prospect: true,
           permanentClient: false,
           marketerName: session?.user?.real_name,
         }),
@@ -110,7 +109,7 @@ const Table = () => {
         },
         body: JSON.stringify({
           ...filters,
-          followupDone: false,
+          prospect: true,
           permanentClient: false,
           marketerName: session?.user?.real_name,
         }),
@@ -332,41 +331,6 @@ const Table = () => {
         updated_by: session?.user?.real_name || '',
       });
       setIsLoading(false);
-    }
-  }
-
-  async function doneFollowup(reportId: string, reqBy: string) {
-    try {
-      let url: string =
-        process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=done-followup';
-      let options: {} = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: reportId,
-          req_by: reqBy,
-        }),
-      };
-
-      let response = await fetchData(url, options);
-
-      if (response.ok) {
-        if (!isFiltered) await getAllReports();
-        else await getAllReportsFiltered();
-
-        toast.success(
-          'The followup status has been marked as done successfully',
-        );
-      } else {
-        toast.error(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(
-        'An error occurred while changing the status of the followup',
-      );
     }
   }
 
@@ -600,10 +564,6 @@ const Table = () => {
                             />
                             <DeleteButton
                               submitHandler={deleteReport}
-                              reportData={item}
-                            />
-                            <FollowupDoneButton
-                              submitHandler={doneFollowup}
                               reportData={item}
                             />
                           </div>

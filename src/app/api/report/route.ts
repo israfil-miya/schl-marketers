@@ -10,6 +10,14 @@ import { headers } from 'next/headers';
 import Approval from '@/models/Approvals';
 import getTodayDate from '@/utility/gettodaysdate';
 import moment from 'moment-timezone';
+import {
+  createRegexQuery,
+  addBooleanField,
+  addIfDefined,
+  addRegexField,
+  Query,
+  RegexQuery,
+} from '@/utility/reportsfilterhelpers';
 
 async function handleEditReport(req: Request): Promise<{
   data: string | Object;
@@ -165,23 +173,118 @@ async function handleGetAllReports(req: Request): Promise<{
     const isFilter: boolean = headers().get('filtered') === 'true';
     const paginated: boolean = headers().get('paginated') === 'true';
 
-    type Query = {
-      country?: { $regex: string; $options: string };
-      company_name?: { $regex: string; $options: string };
-      category?: { $regex: string; $options: string };
-      marketer_name?: { $regex: string; $options: string };
-      is_test?: boolean;
-      is_prospected?: boolean;
-      is_lead?: boolean;
-      followup_done?: boolean;
-      permanent_client?: boolean;
-      calling_date_history?: { [key: string]: any };
-      $or?: { [key: string]: { $regex: string; $options: string } }[];
-    };
+    // type Query = {
+    //   country?: { $regex: string; $options: string };
+    //   company_name?: { $regex: string; $options: string };
+    //   category?: { $regex: string; $options: string };
+    //   marketer_name?: { $regex: string; $options: string };
+    //   is_test?: boolean;
+    //   is_prospected?: boolean;
+    //   is_lead?: boolean;
+    //   followup_done?: boolean;
+    //   permanent_client?: boolean;
+    //   prospect_status?: { $regex: string; $options: string };
+    //   calling_date_history?: { [key: string]: any };
+    //   $or?: { [key: string]: { $regex: string; $options: string } }[];
+    // };
 
-    let filters = await req.json();
+    // let filters = await req.json();
 
-    let {
+    // let {
+    //   country,
+    //   companyName,
+    //   category,
+    //   marketerName,
+    //   fromDate,
+    //   toDate,
+    //   test,
+    //   prospect,
+    //   generalSearchString,
+    //   onlyLead,
+    //   followupDone,
+    //   permanentClient,
+    //   staleClient,
+    //   prospectStatus,
+    // } = filters;
+
+    // let query: Query = {};
+
+    // if (country) query.country = { $regex: country, $options: 'i' };
+    // if (companyName)
+    //   query.company_name = { $regex: companyName, $options: 'i' };
+    // if (category) query.category = { $regex: category, $options: 'i' };
+    // if (marketerName)
+    //   query.marketer_name = { $regex: marketerName, $options: 'i' };
+
+    // // If 'test' is true, filter to show only records where 'is_test' is true.
+    // // If 'test' is false or undefined, show all records regardless of 'is_test' value.
+    // // If 'prospect' is true, filter to show only records where 'is_prospected' is true.
+    // // If 'prospect' is false or undefined, show all records regardless of 'is_prospected' value.
+    // // If 'permanentClient' is true, filter to show only records where 'permanent_client' is true.
+    // // If 'permanentClient' is false or undefined, show all records regardless of 'permanent_client' value.
+    // // If 'prospectStatus' has a value other than empty string, filter to show only records where 'prospect_status' value match with 'prospectStatus' value.
+    // // If 'prospectStatus' is empty string or undefined, show all records regardless of 'prospect_status' value.
+    // if (test) query.is_test = test;
+    // if (prospect) query.is_prospected = prospect;
+
+    // if (prospectStatus)
+    //   query.prospect_status = { $regex: `^${prospectStatus}$`, $options: 'i' };
+
+    // // If 'followupDone' is neither undefined nor null, set 'query.followup_done' to the value of 'followupDone'.
+    // if (followupDone !== undefined && followupDone !== null)
+    //   query.followup_done = followupDone;
+
+    // // If 'permanentClient' is neither undefined nor null, set 'query.permanent_client' to the value of 'permanentClient'.
+    // if (permanentClient !== undefined && permanentClient !== null)
+    //   query.permanent_client = permanentClient;
+
+    // // Set 'query.is_lead' to the value of 'onlyLead' if it's true; otherwise, set it to false.
+    // query.is_lead = onlyLead || false;
+
+    // if (staleClient) {
+    //   // Calculate the date 2 months ago from today
+    //   let twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');
+
+    //   if (!query.calling_date_history) {
+    //     query.calling_date_history = {};
+    //   }
+
+    //   if (!query.calling_date_history.$not) {
+    //     query.calling_date_history.$not = {};
+    //   }
+
+    //   query.calling_date_history.$not.$elemMatch = {
+    //     $gte: twoMonthsAgo,
+    //   };
+    // }
+
+    // if (fromDate || toDate) {
+    //   if (!query.calling_date_history) {
+    //     query.calling_date_history = {};
+    //   }
+
+    //   if (!query.calling_date_history.$elemMatch) {
+    //     query.calling_date_history.$elemMatch = {};
+    //   }
+
+    //   if (fromDate) {
+    //     query.calling_date_history.$elemMatch.$gte = fromDate;
+    //   }
+    //   if (toDate) {
+    //     query.calling_date_history.$elemMatch.$lte = toDate;
+    //   }
+    // }
+
+    // // If there are no filters applied, clean up the query
+    // if (!fromDate && !toDate && !staleClient) {
+    //   delete query.calling_date_history;
+    // }
+
+    // let searchQuery: Query = { ...query };
+
+    const filters = await req.json();
+
+    const {
       country,
       companyName,
       category,
@@ -190,79 +293,50 @@ async function handleGetAllReports(req: Request): Promise<{
       toDate,
       test,
       prospect,
-      generalSearchString,
       onlyLead,
       followupDone,
       permanentClient,
       staleClient,
+      prospectStatus,
+      generalSearchString,
     } = filters;
 
-    let query: Query = {};
+    const query: Query = {};
 
-    if (country) query.country = { $regex: country, $options: 'i' };
-    if (companyName)
-      query.company_name = { $regex: companyName, $options: 'i' };
-    if (category) query.category = { $regex: category, $options: 'i' };
-    if (marketerName)
-      query.marketer_name = { $regex: marketerName, $options: 'i' };
+    addRegexField(query, 'country', country);
+    addRegexField(query, 'company_name', companyName);
+    addRegexField(query, 'category', category);
+    addRegexField(query, 'marketer_name', marketerName, true);
+    addRegexField(query, 'prospect_status', prospectStatus, true);
 
-    // If 'test' is true, filter to show only records where 'is_test' is true.
-    // If 'test' is false or undefined, show all records regardless of 'is_test' value.
-    // If 'prospect' is true, filter to show only records where 'is_prospected' is true.
-    // If 'prospect' is false or undefined, show all records regardless of 'is_prospected' value.
-    // If 'permanentClient' is true, filter to show only records where 'permanent_client' is true.
-    // If 'permanentClient' is false or undefined, show all records regardless of 'permanent_client' value.
-    if (test) query.is_test = test;
-    if (prospect) query.is_prospected = prospect;
-    if (permanentClient) query.permanent_client = permanentClient;
+    addBooleanField(query, 'is_test', test);
+    addBooleanField(query, 'is_prospected', prospect);
 
-    // If 'followupDone' is neither undefined nor null, set 'query.followup_done' to the value of 'followupDone'.
-    if (followupDone !== undefined && followupDone !== null)
-      query.followup_done = followupDone;
-
-    // Set 'query.is_lead' to the value of 'onlyLead' if it's true; otherwise, set it to false.
     query.is_lead = onlyLead || false;
 
+    addIfDefined(query, 'followup_done', followupDone);
+    addIfDefined(query, 'permanent_client', permanentClient);
+
     if (staleClient) {
-      // Calculate the date 2 months ago from today
-      let twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');
-
-      if (!query.calling_date_history) {
-        query.calling_date_history = {};
-      }
-
-      if (!query.calling_date_history.$not) {
-        query.calling_date_history.$not = {};
-      }
-
-      query.calling_date_history.$not.$elemMatch = {
-        $gte: twoMonthsAgo,
+      const twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');
+      query.calling_date_history = {
+        $not: { $elemMatch: { $gte: twoMonthsAgo } },
       };
     }
 
     if (fromDate || toDate) {
-      if (!query.calling_date_history) {
-        query.calling_date_history = {};
-      }
-
-      if (!query.calling_date_history.$elemMatch) {
-        query.calling_date_history.$elemMatch = {};
-      }
-
-      if (fromDate) {
-        query.calling_date_history.$elemMatch.$gte = fromDate;
-      }
-      if (toDate) {
-        query.calling_date_history.$elemMatch.$lte = toDate;
-      }
+      query.calling_date_history = query.calling_date_history || {};
+      query.calling_date_history.$elemMatch = {
+        ...(fromDate && { $gte: fromDate }),
+        ...(toDate && { $lte: toDate }),
+      };
     }
 
-    // If there are no filters applied, clean up the query
     if (!fromDate && !toDate && !staleClient) {
       delete query.calling_date_history;
     }
 
-    let searchQuery: Query = { ...query };
+    const searchQuery: Query = { ...query };
 
     if (!query && isFilter == true && !generalSearchString) {
       return { data: 'No filter applied', status: 400 };

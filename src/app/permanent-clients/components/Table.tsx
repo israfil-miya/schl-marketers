@@ -31,6 +31,8 @@ const Table = () => {
     items: [],
   });
 
+  const [marketers, setMarketers] = useState<string[]>([]);
+
   const router = useRouter();
 
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
@@ -52,6 +54,7 @@ const Table = () => {
     toDate: '',
     test: false,
     prospect: false,
+    marketerName: '',
     generalSearchString: '',
   });
 
@@ -70,7 +73,9 @@ const Table = () => {
           page,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ marketerName: session?.user?.real_name }),
+        body: JSON.stringify({
+          permanentClient: true,
+        }),
       };
 
       let response = await fetchData(url, options);
@@ -105,7 +110,7 @@ const Table = () => {
         },
         body: JSON.stringify({
           ...filters,
-          marketerName: session?.user?.real_name,
+          permanentClient: true,
         }),
       };
 
@@ -156,37 +161,16 @@ const Table = () => {
   }
 
   async function editReport(
-    reportId: string,
-    isRecall: boolean,
     originalReportData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
-    setIsRecall: React.Dispatch<React.SetStateAction<boolean>>,
   ) {
-    console.log('editReport', reportId, isRecall, editedData);
-
     try {
       setIsLoading(true);
 
-      const recallLimit = 30;
-
-      const lastCallDate =
-        editedData.calling_date_history[
-          editedData.calling_date_history.length - 1
-        ];
-
-      const daysPassedSinceLastCall = countDaysSinceLastCall(
-        new Date(lastCallDate),
-      );
-
-      const isRecallAllowed =
-        daysPassedSinceLastCall > 15 ||
-        session?.user.role === 'super' ||
-        session?.user.role === 'admin';
-
       if (!editedData.followup_done && editedData.followup_date === '') {
         toast.error(
-          'Followup date is required because followup is set as pending for this report',
+          'Followup date is required because followup is set as pending for this client',
         );
         setEditedData({
           ...originalReportData,
@@ -196,129 +180,28 @@ const Table = () => {
         return;
       }
 
-      if (isRecall) {
-        if (isRecallAllowed) {
-          const recallCountUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=get-recall-count`;
-          const recallCount = await fetchData(recallCountUrl, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              name: session?.user.real_name,
-            },
-          });
+      const editReportUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=edit-report`;
+      const editOptions = {
+        method: 'POST',
+        body: JSON.stringify(editedData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
 
-          if (recallCount.ok) {
-            if (recallCount.data < recallLimit) {
-              const today = moment().utc().format('YYYY-MM-DD');
+      const response = await fetchData(editReportUrl, editOptions);
 
-              const isFollowup = reports.items.find(
-                (data) =>
-                  data.followup_date === today && data._id === editedData._id,
-              );
+      if (response.ok) {
+        if (!isFiltered) await getAllReports();
+        else await getAllReportsFiltered();
 
-              if (isFollowup) {
-                const editReportUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=edit-report`;
-
-                const editOptions = {
-                  method: 'POST',
-                  body: JSON.stringify(editedData),
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                };
-
-                const response = await fetchData(editReportUrl, editOptions);
-
-                if (response.ok) {
-                  if (!isFiltered) await getAllReports();
-                  else await getAllReportsFiltered();
-
-                  toast.success('Edited the report successfully');
-                  setEditedData({});
-                  setIsRecall(false);
-                } else {
-                  toast.error(response.data);
-                }
-              } else {
-                delete editedData._id;
-                delete editedData.__v;
-
-                const submitData = {
-                  req_type: 'Report Edit',
-                  req_by: session?.user.real_name,
-                  id: reportId,
-                  ...editedData,
-                  calling_date_history:
-                    editedData.calling_date_history.includes(today)
-                      ? editedData.calling_date_history
-                      : [...editedData.calling_date_history, today],
-                  updated_by: session?.user.real_name,
-                };
-
-                const approvalUrl = `${process.env.NEXT_PUBLIC_PORTAL_URL}/api/approval`;
-
-                const approvalOptions = {
-                  method: 'POST',
-                  body: JSON.stringify(submitData),
-                  headers: {
-                    'Content-Type': 'application/json',
-                    recall: true,
-                  },
-                };
-
-                const response = await fetchData(approvalUrl, approvalOptions);
-
-                setEditedData({});
-                setIsRecall(false);
-
-                if (response.ok) {
-                  toast.success(
-                    'Today is not the followup date of the report to recall, an approval request has been sent to admin',
-                  );
-                } else {
-                  toast.error(response.data.message);
-                }
-              }
-            } else {
-              toast.error(
-                'You have reached the limit of recall requests, please contact an admin!',
-              );
-              setEditedData({});
-              setIsLoading(false);
-              return;
-            }
-          } else {
-            toast.error(recallCount.data);
-          }
-        } else {
-          toast.error(
-            'You have to wait 15 days from your last call to make a call again or contact an admin!',
-          );
-        }
+        toast.success('Edited the client data successfully');
       } else {
-        const editReportUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=edit-report`;
-        const editOptions = {
-          method: 'POST',
-          body: JSON.stringify(editedData),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-
-        const response = await fetchData(editReportUrl, editOptions);
-
-        if (response.ok) {
-          if (!isFiltered) await getAllReports();
-          else await getAllReportsFiltered();
-
-          toast.success('Edited the report successfully');
-        } else {
-          toast.error(response.data);
-        }
+        toast.error(response.data);
       }
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while editing the report');
+      toast.error('An error occurred while editing the client data');
     } finally {
       setEditedData({
         ...originalReportData,
@@ -328,8 +211,36 @@ const Table = () => {
     }
   }
 
+  async function getAllMarketers() {
+    try {
+      let url: string =
+        process.env.NEXT_PUBLIC_BASE_URL + '/api/user?action=get-all-marketers';
+      let options: {} = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      let response = await fetchData(url, options);
+
+      if (response.ok) {
+        let marketersName = response.data.map(
+          (marketer: any) => marketer.real_name,
+        );
+        setMarketers(marketersName);
+      } else {
+        toast.error(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while retrieving marketers data');
+    }
+  }
+
   useEffect(() => {
     getAllReports();
+    getAllMarketers();
   }, []);
 
   function handlePrevious() {
@@ -379,26 +290,7 @@ const Table = () => {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row justify-between mb-4 gap-2">
-        <button
-          onClick={() =>
-            router.push(process.env.NEXT_PUBLIC_BASE_URL + '/make-a-call')
-          }
-          className="flex justify-between items-center gap-2 rounded-md bg-primary hover:opacity-90 hover:ring-4 hover:ring-primary transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2"
-        >
-          Add new report
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-          </svg>
-        </button>
-
+      <div className="flex flex-col justify-center sm:flex-row sm:justify-end mb-4 gap-2">
         <div className="items-center flex gap-2">
           <div className="inline-flex rounded-md" role="group">
             <button
@@ -468,6 +360,7 @@ const Table = () => {
             submitHandler={getAllReportsFiltered}
             setFilters={setFilters}
             filters={filters}
+            marketers={marketers}
             className="w-full justify-between sm:w-auto"
           />
         </div>

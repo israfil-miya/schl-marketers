@@ -8,9 +8,12 @@ interface PropsType {
   reportData: { [key: string]: any };
   isLoading: boolean;
   submitHandler: (
-    originalReportData: { [key: string]: any },
+    reportId: string,
+    isRecall: boolean,
+    reportData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
+    setIsRecall: React.Dispatch<React.SetStateAction<boolean>>,
   ) => Promise<void>;
 }
 
@@ -18,6 +21,7 @@ const EditButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: session } = useSession();
   const [editedBy, setEditedBy] = useState<string>('');
+  const [isRecall, setIsRecall] = useState<boolean>(false);
 
   const [editedData, setEditedData] = useState<{ [key: string]: any }>({
     ...props.reportData,
@@ -71,6 +75,7 @@ const EditButton: React.FC<PropsType> = (props) => {
         disabled={props.isLoading}
         onClick={() => {
           setIsOpen(true);
+          setIsRecall(false);
           setEditedBy(props.reportData.updated_by || '');
         }}
         className="items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-2 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white p-2"
@@ -448,6 +453,20 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Permanent Client
                 </label>
               </div>
+
+              <div className="flex gap-2 items-center">
+                <input
+                  name="is_recall"
+                  checked={isRecall}
+                  onChange={() => setIsRecall(!isRecall)}
+                  id="recall-checkbox"
+                  type="checkbox"
+                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <label htmlFor="recall-checkbox" className="uppercase ">
+                  Recall
+                </label>
+              </div>
             </div>
           </div>
           <footer className="flex items-center px-4 py-2 border-t justify-between gap-6 border-gray-200 rounded-b">
@@ -470,9 +489,12 @@ const EditButton: React.FC<PropsType> = (props) => {
               <button
                 onClick={() => {
                   props.submitHandler(
+                    props.reportData?._id,
+                    isRecall,
                     props.reportData,
                     editedData,
                     setEditedData,
+                    setIsRecall,
                   );
                   setIsOpen(false);
                 }}

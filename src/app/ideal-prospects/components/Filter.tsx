@@ -6,7 +6,6 @@ import cn from '@/utility/cn';
 interface PropsType {
   className?: string;
   submitHandler: () => void;
-  marketers: string[];
   filters: {
     country: string;
     companyName: string;
@@ -14,8 +13,7 @@ interface PropsType {
     fromDate: string;
     toDate: string;
     test: boolean;
-    prospect: boolean;
-    marketerName: string;
+    prospectStatus: string;
     generalSearchString: string;
   };
   setFilters: React.Dispatch<React.SetStateAction<any>>;
@@ -54,8 +52,7 @@ const SideNavBar: React.FC<PropsType> = (props) => {
       fromDate: '',
       toDate: '',
       test: false,
-      prospect: false,
-      marketerName: '',
+      prospectStatus: '',
       generalSearchString: '',
     });
   };
@@ -178,24 +175,26 @@ const SideNavBar: React.FC<PropsType> = (props) => {
                     type="text"
                   />
                 </div>
-
                 <div className="">
-                  <label className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2">
-                    Marketer Name
+                  <label
+                    className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2"
+                    htmlFor="grid-last-name"
+                  >
+                    Prospect Status
                   </label>
                   <select
-                    name="marketerName"
-                    value={filters.marketerName}
+                    name="prospectStatus"
+                    value={filters.prospectStatus}
                     onChange={handleChange}
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     defaultValue={''}
+                    required
+                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
-                    <option value="">Select a marketer</option>
-                    {props.marketers.map((marketer) => (
-                      <option key={marketer} value={marketer}>
-                        {marketer}
-                      </option>
-                    ))}
+                    <option value={''} className="text-gray-400">
+                      Select prospect status
+                    </option>
+                    <option value="high_interest">High Interest</option>
+                    <option value="low_interest">Low Interest</option>
                   </select>
                 </div>
               </div>
@@ -211,20 +210,6 @@ const SideNavBar: React.FC<PropsType> = (props) => {
                   />
                   <label htmlFor="test-checkbox" className="uppercase ">
                     Test Job
-                  </label>
-                </div>
-
-                <div className="flex gap-2 items-center">
-                  <input
-                    name="prospect"
-                    checked={filters.prospect}
-                    onChange={handleChange}
-                    id="prospect-checkbox"
-                    type="checkbox"
-                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                  />
-                  <label htmlFor="prospect-checkbox" className="uppercase ">
-                    Prospect
                   </label>
                 </div>
               </div>
