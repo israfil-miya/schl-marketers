@@ -6,6 +6,7 @@ import LineChart from '@/components/Charts/Line.chart';
 interface ReportsCountGraphProps {
   isLoading: boolean;
   data: { [key: string]: number };
+  className?: string;
 }
 
 interface LineChartData {
@@ -24,6 +25,7 @@ interface LineChartData {
 const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
   isLoading,
   data,
+  className,
 }) => {
   const [graphData, setGraphData] = useState<LineChartData>({
     labels: [],
@@ -41,7 +43,7 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
       labels: dataLabels,
       datasets: [
         {
-          label: 'Report Count',
+          label: 'Reports Count',
           data: Object.values(data),
           backgroundColor: '#466cdb',
           borderColor: 'black',
@@ -56,7 +58,13 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
   return (
     <div>
       {isLoading ? <p className="text-center">Loading...</p> : null}
-      {!isLoading && <LineChart chartData={graphData} showLegend={false} />}
+      {!isLoading && (
+        <LineChart
+          className={className || ''}
+          chartData={graphData}
+          showLegend={false}
+        />
+      )}
     </div>
   );
 };

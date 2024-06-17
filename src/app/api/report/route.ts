@@ -447,7 +447,7 @@ async function handleGetReportsCount(req: Request): Promise<{
   }
 }
 
-async function handleGetClientConversionRates(req: Request): Promise<{
+async function handleGetClientsOnboard(req: Request): Promise<{
   data: string | Record<string, number>;
   status: number;
 }> {
@@ -512,7 +512,7 @@ async function handleGetClientConversionRates(req: Request): Promise<{
   }
 }
 
-async function handleGetTestParticipationRates(req: Request): Promise<{
+async function handleGetTestOrdersTrend(req: Request): Promise<{
   data: string | Record<string, number>;
   status: number;
 }> {
@@ -612,11 +612,11 @@ export async function GET(req: Request) {
     case 'get-reports-count':
       res = await handleGetReportsCount(req);
       return NextResponse.json(res.data, { status: res.status });
-    case 'get-client-conversion-rates':
-      res = await handleGetClientConversionRates(req);
+    case 'get-clients-onboard':
+      res = await handleGetClientsOnboard(req);
       return NextResponse.json(res.data, { status: res.status });
-    case 'get-test-participation-rates':
-      res = await handleGetTestParticipationRates(req);
+    case 'get-test-orders-trend':
+      res = await handleGetTestOrdersTrend(req);
       return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });

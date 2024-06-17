@@ -24,7 +24,17 @@ const BarChart: React.FC<BarChartProps> = ({
       datalabels: {
         anchor: 'end',
         align: 'top',
-        formatter: (value) => Math.round(value as number),
+        // formatter: (value) => Math.round(value as number),
+        formatter: (value) => {
+          if (typeof value === 'number') {
+            if (value % 1 === 0) {
+              return value.toFixed(0); // Display as integer (no decimal)
+            } else {
+              return value.toFixed(1); // Display with one decimal place
+            }
+          }
+          return value; // Return the value as-is if it's not a number
+        },
         font: {
           weight: 'bold',
         },
@@ -43,8 +53,20 @@ const BarChart: React.FC<BarChartProps> = ({
     scales: {
       y: {
         beginAtZero: true,
+        // ticks: {
+        //   callback: (value) => Math.round(value as number),
+        // },
         ticks: {
-          callback: (value) => Math.round(value as number),
+          callback: (value) => {
+            if (typeof value === 'number') {
+              if (value % 1 === 0) {
+                return value.toFixed(0); // Display as integer (no decimal)
+              } else {
+                return value.toFixed(1); // Display with one decimal place
+              }
+            }
+            return value; // Return the value as-is if it's not a number
+          },
         },
       },
     },
