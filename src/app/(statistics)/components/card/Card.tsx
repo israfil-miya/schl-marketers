@@ -1,35 +1,23 @@
-'use client';
-
 import React from 'react';
-import Image from 'next/image';
+
 interface CardProps {
   title: string;
-  imageUrl: string;
   description: string;
   onClick: () => void;
+  icon: React.ReactNode;
 }
 
-const Card: React.FC<CardProps> = ({
-  title,
-  imageUrl,
-  description,
-  onClick,
-}) => {
+const Card: React.FC<CardProps> = ({ title, description, onClick, icon }) => {
   return (
-    <div className="bg-white shadow-md overflow-hidden flex cursor-pointer w-auto border">
-      <div className="w-1/3">
-        <Image
-          src={imageUrl}
-          alt={title}
-          width={50} // Set a suitable width
-          height={50} // Set a suitable height
-          className="w-full h-full object-cover"
-        />
+    <div
+      className="flex-1 cursor-pointer p-4 bg-opacity-25 bg-gray-300 border shadow-md flex flex-col items-start"
+      onClick={onClick}
+    >
+      <div className="flex items-center mb-4">
+        <div className="text-2xl mr-3">{icon}</div>
+        <h2 className="text-xl font-bold">{title}</h2>
       </div>
-      <div className="w-2/3 p-4">
-        <h2 className="text-xl font-bold mb-2">{title}</h2>
-        <p className="text-gray-700">{description}</p>
-      </div>
+      <p className="text-gray-700">{description}</p>
     </div>
   );
 };

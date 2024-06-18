@@ -72,7 +72,7 @@ const Table = () => {
         },
         body: JSON.stringify({
           prospect: true,
-          permanentClient: false,
+          regularClient: false,
           marketerName: session?.user?.real_name,
         }),
       };
@@ -110,7 +110,7 @@ const Table = () => {
         body: JSON.stringify({
           ...filters,
           prospect: true,
-          permanentClient: false,
+          regularClient: false,
           marketerName: session?.user?.real_name,
         }),
       };

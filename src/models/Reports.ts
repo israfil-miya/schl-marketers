@@ -23,7 +23,7 @@ interface Report {
   is_prospected: boolean;
   prospect_status: string;
   is_lead: boolean;
-  permanent_client: boolean;
+  regular_client: boolean;
   lead_withdrawn: boolean;
 }
 
@@ -63,7 +63,7 @@ const ReportSchema = new mongoose.Schema<Report>(
     is_prospected: { type: Boolean, default: false },
     prospect_status: { type: String, default: '' },
     is_lead: { type: Boolean, default: false },
-    permanent_client: { type: Boolean, default: false },
+    regular_client: { type: Boolean, default: false },
     lead_withdrawn: { type: Boolean, default: false },
   },
   {

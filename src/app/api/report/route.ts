@@ -186,7 +186,7 @@ async function handleGetAllReports(req: Request): Promise<{
       prospect,
       onlyLead,
       followupDone,
-      permanentClient,
+      regularClient,
       staleClient,
       prospectStatus,
       generalSearchString,
@@ -206,7 +206,7 @@ async function handleGetAllReports(req: Request): Promise<{
     query.is_lead = onlyLead || false;
 
     addIfDefined(query, 'followup_done', followupDone);
-    addIfDefined(query, 'permanent_client', permanentClient);
+    addIfDefined(query, 'regular_client', regularClient);
 
     if (staleClient) {
       const twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');
@@ -335,6 +335,7 @@ async function handleWithdrawLead(req: Request): Promise<{
         is_lead: false,
         lead_withdrawn: true,
         followup_done: leadData.followup_done,
+        regular_client: leadData.regular_client,
       });
 
       if (reportData) {
@@ -470,7 +471,7 @@ async function handleGetClientsOnboard(req: Request): Promise<{
     // Optimize the query with indexing and projections
     const reports = await Report.find({
       is_lead: false,
-      permanent_client: true,
+      regular_client: true,
       marketer_name: marketerName,
       createdAt: { $gte: startDate, $lte: endDate },
     })
@@ -577,6 +578,79 @@ async function handleGetTestOrdersTrend(req: Request): Promise<{
   }
 }
 
+async function handleGetDailyReportsStatus(req: Request): Promise<{
+  data: string | Record<string, number>;
+  status: number;
+}> {
+  try {
+    const marketerName: string = (headers().get('name') as string) || '';
+    console.log(marketerName);
+
+    const date = moment().tz('Asia/Dhaka').format('YYYY-MM-DD');
+
+    const totalCalls = await Report.countDocuments({
+      marketer_name: marketerName,
+      calling_date_history: {
+        $elemMatch: {
+          $gte: date,
+          $lte: date,
+        },
+      },
+      is_lead: false,
+    });
+
+    const totalLeads = await Report.countDocuments({
+      marketer_name: marketerName,
+      calling_date_history: {
+        $elemMatch: {
+          $gte: date,
+          $lte: date,
+        },
+      },
+      is_lead: true,
+    });
+
+    const totalTests = await Report.countDocuments({
+      marketer_name: marketerName,
+      calling_date_history: {
+        $elemMatch: {
+          $gte: date,
+          $lte: date,
+        },
+      },
+      is_test: true,
+      is_lead: false,
+    });
+
+    const totalProspects = await Report.countDocuments({
+      marketer_name: marketerName,
+      calling_date_history: {
+        $elemMatch: {
+          $gte: date,
+          $lte: date,
+        },
+      },
+      is_prospected: true,
+      is_lead: false,
+    });
+
+    let data = {
+      totalCalls: totalCalls || 0,
+      totalLeads: totalLeads || 0,
+      totalTests: totalTests || 0,
+      totalProspects: totalProspects || 0,
+    };
+
+    return {
+      data,
+      status: 200,
+    };
+  } catch (e) {
+    console.error(e);
+    return { data: 'An error occurred', status: 500 };
+  }
+}
+
 export async function POST(req: Request) {
   let res: { data: string | Object; status: number };
 
@@ -617,6 +691,9 @@ export async function GET(req: Request) {
       return NextResponse.json(res.data, { status: res.status });
     case 'get-test-orders-trend':
       res = await handleGetTestOrdersTrend(req);
+      return NextResponse.json(res.data, { status: res.status });
+    case 'get-daily-reports-status':
+      res = await handleGetDailyReportsStatus(req);
       return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });

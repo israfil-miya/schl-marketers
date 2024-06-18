@@ -74,7 +74,7 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          permanentClient: true,
+          regularClient: true,
         }),
       };
 
@@ -110,7 +110,7 @@ const Table = () => {
         },
         body: JSON.stringify({
           ...filters,
-          permanentClient: true,
+          regularClient: true,
         }),
       };
 

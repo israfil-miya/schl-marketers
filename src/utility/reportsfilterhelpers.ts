@@ -12,7 +12,7 @@ export interface Query {
   is_prospected?: boolean;
   is_lead?: boolean;
   followup_done?: boolean;
-  permanent_client?: boolean;
+  regular_client?: boolean;
   prospect_status?: RegexQuery;
   calling_date_history?: { [key: string]: any };
   $or?: { [key: string]: RegexQuery }[];
@@ -20,7 +20,7 @@ export interface Query {
 
 type BooleanFields = Extract<
   keyof Query,
-  'is_test' | 'is_prospected' | 'is_lead' | 'followup_done' | 'permanent_client'
+  'is_test' | 'is_prospected' | 'is_lead' | 'followup_done' | 'regular_client'
 >;
 type RegexFields = Extract<
   keyof Query,
