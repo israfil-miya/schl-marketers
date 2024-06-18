@@ -6,7 +6,6 @@ import cn from '@/utility/cn';
 interface PropsType {
   className?: string;
   submitHandler: () => void;
-  marketers: string[];
   filters: {
     country: string;
     companyName: string;
@@ -15,8 +14,8 @@ interface PropsType {
     toDate: string;
     test: boolean;
     prospect: boolean;
-    marketerName: string;
     generalSearchString: string;
+    show: 'all' | 'mine' | 'others';
   };
   setFilters: React.Dispatch<React.SetStateAction<any>>;
   isLoading: boolean;
@@ -55,8 +54,8 @@ const SideNavBar: React.FC<PropsType> = (props) => {
       toDate: '',
       test: false,
       prospect: false,
-      marketerName: '',
       generalSearchString: '',
+      show: 'all',
     });
   };
 
@@ -113,7 +112,7 @@ const SideNavBar: React.FC<PropsType> = (props) => {
               </svg>
             </button>
           </header>
-          <div className="overflow-hidden max-h-[70vh] p-4">
+          <div className="overflow-y-scroll sm:overflow-hidden max-h-[70vh] p-4">
             <div className="regular-search">
               <div className="grid grid-cols-1 gap-x-3 gap-y-4">
                 <div className="">
@@ -178,26 +177,6 @@ const SideNavBar: React.FC<PropsType> = (props) => {
                     type="text"
                   />
                 </div>
-
-                <div className="">
-                  <label className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2">
-                    Marketer Name
-                  </label>
-                  <select
-                    name="marketerName"
-                    value={filters.marketerName}
-                    onChange={handleChange}
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    defaultValue={''}
-                  >
-                    <option value="">Select a marketer</option>
-                    {props.marketers.map((marketer) => (
-                      <option key={marketer} value={marketer}>
-                        {marketer}
-                      </option>
-                    ))}
-                  </select>
-                </div>
               </div>
               <div className="checkboxes flex flex-col sm:flex-row gap-4 my-4">
                 <div className="flex gap-2 items-center">
@@ -226,6 +205,59 @@ const SideNavBar: React.FC<PropsType> = (props) => {
                   <label htmlFor="prospect-checkbox" className="uppercase ">
                     Prospect
                   </label>
+                </div>
+              </div>
+
+              <div className="w-full mb-4">
+                <label className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2">
+                  View Options
+                </label>
+
+                <div className="radios flex flex-col sm:flex-row gap-1 sm:gap-4">
+                  <div className="flex gap-2 items-center">
+                    <input
+                      name="show"
+                      checked={filters.show === 'mine'}
+                      onChange={handleChange}
+                      id="showMine-radio"
+                      value="mine"
+                      type="radio"
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="showMine-radio" className="uppercase">
+                      Show Mine
+                    </label>
+                  </div>
+
+                  <div className="flex gap-2 items-center">
+                    <input
+                      name="show"
+                      checked={filters.show === 'others'}
+                      onChange={handleChange}
+                      id="showOthers-radio"
+                      value="others"
+                      type="radio"
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="showOthers-radio" className="uppercase">
+                      Show Others
+                    </label>
+                  </div>
+
+                  <div className="flex gap-2 items-center">
+                    <input
+                      name="show"
+                      checked={filters.show === 'all'}
+                      onChange={handleChange}
+                      id="showAll-radio"
+                      value="all"
+                      type="radio"
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="showAll-radio" className="uppercase">
+                      Show All
+                    </label>
+                  </div>
                 </div>
               </div>
 

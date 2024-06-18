@@ -129,7 +129,7 @@ const Graphs = () => {
   }, []);
 
   return (
-    <div>
+    <div className="px-2">
       <div className="mb-4 p-2 bg-gray-100 border-2">
         <p className="text-center mt-4 text-lg underline font-semibold uppercase">
           Reports Count (last 12 month)

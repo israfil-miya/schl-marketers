@@ -10,9 +10,7 @@ import CallingStatusTd from '@/components/ExtendableTd';
 import Linkify from '@/components/Linkify';
 import DeleteButton from './Delete';
 import EditButton from './Edit';
-import countDaysSinceLastCall from '@/utility/countdayspassed';
 import { useSession } from 'next-auth/react';
-import moment from 'moment-timezone';
 
 type ReportsState = {
   pagination: {
@@ -30,10 +28,6 @@ const Table = () => {
     },
     items: [],
   });
-
-  const [marketers, setMarketers] = useState<string[]>([]);
-
-  const router = useRouter();
 
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -54,8 +48,8 @@ const Table = () => {
     toDate: '',
     test: false,
     prospect: false,
-    marketerName: '',
     generalSearchString: '',
+    show: 'all' as 'all' | 'mine' | 'others',
   });
 
   async function getAllReports() {
@@ -74,6 +68,7 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          show: 'all',
           regularClient: true,
         }),
       };
@@ -131,8 +126,17 @@ const Table = () => {
     return;
   }
 
-  async function deleteReport(reportId: string, reqBy: string) {
+  async function deleteReport(
+    originalReportData: { [key: string]: any },
+    reportId: string,
+    reqBy: string,
+  ) {
     try {
+      if (originalReportData.marketer_name !== session?.user?.real_name) {
+        toast.error('You are not allowed to delete this report');
+        return;
+      }
+
       let url: string = process.env.NEXT_PUBLIC_PORTAL_URL + '/api/approval';
       let options: {} = {
         method: 'POST',
@@ -166,6 +170,11 @@ const Table = () => {
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   ) {
     try {
+      if (originalReportData.marketer_name !== session?.user?.real_name) {
+        toast.error('You are not allowed to edit this report');
+        return;
+      }
+
       setIsLoading(true);
 
       if (!editedData.followup_done && editedData.followup_date === '') {
@@ -211,36 +220,8 @@ const Table = () => {
     }
   }
 
-  async function getAllMarketers() {
-    try {
-      let url: string =
-        process.env.NEXT_PUBLIC_BASE_URL + '/api/user?action=get-all-marketers';
-      let options: {} = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      let response = await fetchData(url, options);
-
-      if (response.ok) {
-        let marketersName = response.data.map(
-          (marketer: any) => marketer.real_name,
-        );
-        setMarketers(marketersName);
-      } else {
-        toast.error(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('An error occurred while retrieving marketers data');
-    }
-  }
-
   useEffect(() => {
     getAllReports();
-    getAllMarketers();
   }, []);
 
   function handlePrevious() {
@@ -360,7 +341,6 @@ const Table = () => {
             submitHandler={getAllReportsFiltered}
             setFilters={setFilters}
             filters={filters}
-            marketers={marketers}
             className="w-full justify-between sm:w-auto"
           />
         </div>
@@ -376,7 +356,6 @@ const Table = () => {
                 <tr>
                   <th>#</th>
                   <th>Calling Date</th>
-                  <th>Marketer</th>
                   <th>Followup Date</th>
                   <th>Country</th>
                   <th>Website</th>
@@ -417,7 +396,6 @@ const Table = () => {
                         {item.calling_date &&
                           convertToDDMMYYYY(item.calling_date)}
                       </td>
-                      <td>{item.marketer_name}</td>
                       <td>
                         {item.followup_date &&
                           convertToDDMMYYYY(item.followup_date)}

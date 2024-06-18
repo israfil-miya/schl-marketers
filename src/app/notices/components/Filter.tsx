@@ -103,7 +103,7 @@ const SideNavBar: React.FC<PropsType> = (props) => {
               </svg>
             </button>
           </header>
-          <div className="overflow-hidden max-h-[70vh] p-4">
+          <div className="overflow-y-scroll sm:overflow-hidden max-h-[70vh] p-4">
             <div className="grid grid-cols-1 gap-x-3 gap-y-4">
               <div className="">
                 <label className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2">

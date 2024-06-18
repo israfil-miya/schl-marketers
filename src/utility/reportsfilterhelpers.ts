@@ -7,7 +7,9 @@ export interface Query {
   country?: RegexQuery;
   company_name?: RegexQuery;
   category?: RegexQuery;
-  marketer_name?: RegexQuery;
+  marketer_name?:
+    | RegexQuery
+    | { [key: string]: RegexQuery | string | undefined };
   is_test?: boolean;
   is_prospected?: boolean;
   is_lead?: boolean;

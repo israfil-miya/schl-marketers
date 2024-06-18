@@ -172,6 +172,8 @@ async function handleGetAllReports(req: Request): Promise<{
     const ITEMS_PER_PAGE: number = Number(headers().get('item_per_page')) || 30;
     const isFilter: boolean = headers().get('filtered') === 'true';
     const paginated: boolean = headers().get('paginated') === 'true';
+    const session = await auth();
+    const marketerNameFromSession: string = session?.user.real_name || '';
 
     const filters = await req.json();
 
@@ -190,6 +192,7 @@ async function handleGetAllReports(req: Request): Promise<{
       staleClient,
       prospectStatus,
       generalSearchString,
+      show,
     } = filters;
 
     const query: Query = {};
@@ -225,6 +228,25 @@ async function handleGetAllReports(req: Request): Promise<{
 
     if (!fromDate && !toDate && !staleClient) {
       delete query.calling_date_history;
+    }
+
+    // regular client view filter (/regular-clients)
+    if (show) {
+      switch (show) {
+        case 'all':
+          break;
+        case 'others':
+          if (marketerNameFromSession)
+            query.marketer_name = {
+              $not: createRegexQuery(marketerNameFromSession, true),
+            };
+          break;
+        case 'mine':
+          addRegexField(query, 'marketer_name', marketerNameFromSession, true);
+          break;
+        default:
+          break;
+      }
     }
 
     const searchQuery: Query = { ...query };
@@ -586,7 +608,10 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
     const marketerName: string = (headers().get('name') as string) || '';
     console.log(marketerName);
 
-    const date = moment().tz('Asia/Dhaka').format('YYYY-MM-DD');
+    const date = moment()
+      .tz('Asia/Dhaka')
+      .subtract(2, 'days')
+      .format('YYYY-MM-DD');
 
     const totalCalls = await Report.countDocuments({
       marketer_name: marketerName,
@@ -633,6 +658,8 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
       is_prospected: true,
       is_lead: false,
     });
+
+    console.log(totalCalls, totalLeads, totalTests, totalProspects);
 
     let data = {
       totalCalls: totalCalls || 0,

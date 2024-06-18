@@ -2,7 +2,6 @@ import React from 'react';
 
 interface PropsType {
   children: React.ReactNode | string | undefined;
-  scrollY?: boolean;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string | undefined;
@@ -10,7 +9,6 @@ interface PropsType {
 
 const Drawer: React.FC<PropsType> = ({
   children,
-  scrollY = true,
   isOpen,
   setIsOpen,
   title,
@@ -31,9 +29,7 @@ const Drawer: React.FC<PropsType> = ({
           (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
         }
       >
-        <article
-          className={`relative w-56 flex flex-col space-y-2 h-full ${scrollY && 'overflow-y-scroll'}`}
-        >
+        <article className={`relative w-56 flex flex-col space-y-2 h-full`}>
           <header className="pt-3 px-4 font-bold text-lg">
             <div className="flex justify-between">
               <h1 className="text-gray-500">{title}</h1>

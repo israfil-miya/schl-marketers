@@ -38,13 +38,8 @@ const SideNavBar: React.FC<PropsType> = (props) => {
         </svg>
       </label>
 
-      <Drawer
-        title="Menu"
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        scrollY={false}
-      >
-        <nav className="flex flex-col space-y-1">
+      <Drawer title="Menu" isOpen={isOpen} setIsOpen={setIsOpen}>
+        <nav className="flex flex-col space-y-1 overflow-y-scroll sm:overflow-hidden">
           <Link
             href="/"
             className={cn(
