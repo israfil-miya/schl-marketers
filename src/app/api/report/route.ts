@@ -608,10 +608,7 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
     const marketerName: string = (headers().get('name') as string) || '';
     console.log(marketerName);
 
-    const date = moment()
-      .tz('Asia/Dhaka')
-      .subtract(2, 'days')
-      .format('YYYY-MM-DD');
+    const date = moment().tz('Asia/Dhaka').format('YYYY-MM-DD');
 
     const totalCalls = await Report.countDocuments({
       marketer_name: marketerName,
