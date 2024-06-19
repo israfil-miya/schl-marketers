@@ -12,7 +12,7 @@ import DeleteButton from './Delete';
 import EditButton from './Edit';
 import { useSession } from 'next-auth/react';
 
-type ReportsState = {
+type ClientsState = {
   pagination: {
     count: number;
     pageCount: number;
@@ -21,7 +21,7 @@ type ReportsState = {
 };
 
 const Table = () => {
-  const [reports, setReports] = useState<ReportsState>({
+  const [clients, setClients] = useState<ClientsState>({
     pagination: {
       count: 0,
       pageCount: 0,
@@ -52,7 +52,7 @@ const Table = () => {
     show: 'all' as 'all' | 'mine' | 'others',
   });
 
-  async function getAllReports() {
+  async function getAllClients() {
     try {
       setIsLoading(true);
 
@@ -76,19 +76,19 @@ const Table = () => {
       let response = await fetchData(url, options);
 
       if (response.ok) {
-        setReports(response.data);
+        setClients(response.data);
       } else {
         toast.error(response.data);
       }
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while retrieving reports data');
+      toast.error('An error occurred while retrieving clients data');
     } finally {
       setIsLoading(false);
     }
   }
 
-  async function getAllReportsFiltered() {
+  async function getAllClientsFiltered() {
     try {
       setIsLoading(true);
 
@@ -112,28 +112,28 @@ const Table = () => {
       let response = await fetchData(url, options);
 
       if (response.ok) {
-        setReports(response.data);
+        setClients(response.data);
         setIsFiltered(true);
       } else {
         toast.error(response.data);
       }
     } catch (error) {
       console.error(error);
-      toast.error('An error occurred while retrieving reports data');
+      toast.error('An error occurred while retrieving clients data');
     } finally {
       setIsLoading(false);
     }
     return;
   }
 
-  async function deleteReport(
-    originalReportData: { [key: string]: any },
+  async function deleteClient(
+    originalClientData: { [key: string]: any },
     reportId: string,
     reqBy: string,
   ) {
     try {
-      if (originalReportData.marketer_name !== session?.user?.real_name) {
-        toast.error('You are not allowed to delete this report');
+      if (originalClientData.marketer_name !== session?.user?.real_name) {
+        toast.error('You are not allowed to delete this client');
         return;
       }
 
@@ -164,14 +164,14 @@ const Table = () => {
     return;
   }
 
-  async function editReport(
-    originalReportData: { [key: string]: any },
+  async function editClient(
+    originalClientData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   ) {
     try {
-      if (originalReportData.marketer_name !== session?.user?.real_name) {
-        toast.error('You are not allowed to edit this report');
+      if (originalClientData.marketer_name !== session?.user?.real_name) {
+        toast.error('You are not allowed to edit this clients data');
         return;
       }
 
@@ -182,7 +182,7 @@ const Table = () => {
           'Followup date is required because followup is set as pending for this client',
         );
         setEditedData({
-          ...originalReportData,
+          ...originalClientData,
           updated_by: session?.user?.real_name || '',
         });
         setIsLoading(false);
@@ -201,8 +201,8 @@ const Table = () => {
       const response = await fetchData(editReportUrl, editOptions);
 
       if (response.ok) {
-        if (!isFiltered) await getAllReports();
-        else await getAllReportsFiltered();
+        if (!isFiltered) await getAllClients();
+        else await getAllClientsFiltered();
 
         toast.success('Edited the client data successfully');
       } else {
@@ -213,7 +213,7 @@ const Table = () => {
       toast.error('An error occurred while editing the client data');
     } finally {
       setEditedData({
-        ...originalReportData,
+        ...originalClientData,
         updated_by: session?.user?.real_name || '',
       });
       setIsLoading(false);
@@ -221,7 +221,7 @@ const Table = () => {
   }
 
   useEffect(() => {
-    getAllReports();
+    getAllClients();
   }, []);
 
   function handlePrevious() {
@@ -240,24 +240,24 @@ const Table = () => {
 
   useEffect(() => {
     if (prevPage.current !== 1 || page > 1) {
-      if (reports?.pagination?.pageCount == 1) return;
-      if (!isFiltered) getAllReports();
-      else getAllReportsFiltered();
+      if (clients?.pagination?.pageCount == 1) return;
+      if (!isFiltered) getAllClients();
+      else getAllClientsFiltered();
     }
     prevPage.current = page;
   }, [page]);
 
   useEffect(() => {
-    if (reports?.pagination?.pageCount !== undefined) {
+    if (clients?.pagination?.pageCount !== undefined) {
       setPage(1);
       if (prevPageCount.current !== 0) {
-        if (!isFiltered) getAllReportsFiltered();
+        if (!isFiltered) getAllClientsFiltered();
       }
-      if (reports) setPageCount(reports?.pagination?.pageCount);
-      prevPageCount.current = reports?.pagination?.pageCount;
+      if (clients) setPageCount(clients?.pagination?.pageCount);
+      prevPageCount.current = clients?.pagination?.pageCount;
       prevPage.current = 1;
     }
-  }, [reports?.pagination?.pageCount]);
+  }, [clients?.pagination?.pageCount]);
 
   useEffect(() => {
     // Reset to first page when itemPerPage changes
@@ -265,8 +265,8 @@ const Table = () => {
     prevPage.current = 1;
     setPage(1);
 
-    if (!isFiltered) getAllReports();
-    else getAllReportsFiltered();
+    if (!isFiltered) getAllClients();
+    else getAllClientsFiltered();
   }, [itemPerPage]);
 
   return (
@@ -299,7 +299,7 @@ const Table = () => {
               className="hidden sm:visible sm:inline-flex items-center px-4 py-2 text-sm font-medium border"
             >
               <label>
-                Page <b>{reports?.items?.length !== 0 ? page : 0}</b> of{' '}
+                Page <b>{clients?.items?.length !== 0 ? page : 0}</b> of{' '}
                 <b>{pageCount}</b>
               </label>
             </button>
@@ -338,7 +338,7 @@ const Table = () => {
           </select>
           <FilterButton
             isLoading={isLoading}
-            submitHandler={getAllReportsFiltered}
+            submitHandler={getAllClientsFiltered}
             setFilters={setFilters}
             filters={filters}
             className="w-full justify-between sm:w-auto"
@@ -349,7 +349,7 @@ const Table = () => {
       {isLoading ? <p className="text-center">Loading...</p> : <></>}
 
       {!isLoading &&
-        (reports?.items?.length !== 0 ? (
+        (clients?.items?.length !== 0 ? (
           <div className="table-responsive text-nowrap text-sm">
             <table className="table">
               <thead className="table-dark">
@@ -373,7 +373,7 @@ const Table = () => {
                 </tr>
               </thead>
               <tbody>
-                {reports?.items?.map((item, index) => {
+                {clients?.items?.map((item, index) => {
                   let tableRowColor = 'table-secondary';
 
                   if (item.is_prospected) {
@@ -443,12 +443,12 @@ const Table = () => {
                           <div className="flex gap-2">
                             <EditButton
                               isLoading={isLoading}
-                              submitHandler={editReport}
-                              reportData={item}
+                              submitHandler={editClient}
+                              clientData={item}
                             />
                             <DeleteButton
-                              submitHandler={deleteReport}
-                              reportData={item}
+                              submitHandler={deleteClient}
+                              clientData={item}
                             />
                           </div>
                         </div>
@@ -462,7 +462,7 @@ const Table = () => {
         ) : (
           <tr key={0}>
             <td colSpan={16} className=" align-center text-center">
-              No Reports To Show.
+              No Clients To Show.
             </td>
           </tr>
         ))}

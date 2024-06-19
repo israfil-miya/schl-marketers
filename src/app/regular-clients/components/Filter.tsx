@@ -21,7 +21,7 @@ interface PropsType {
   isLoading: boolean;
 }
 
-const SideNavBar: React.FC<PropsType> = (props) => {
+const FilterButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { filters, setFilters } = props;
 
@@ -91,7 +91,7 @@ const SideNavBar: React.FC<PropsType> = (props) => {
         >
           <header className="flex items-center align-middle justify-between px-4 py-2 border-b rounded-t">
             <h3 className="text-gray-900 text-lg lg:text-xl font-semibold dark:text-white uppercase">
-              Filter Reports
+              Filter Clients
             </h3>
             <button
               onClick={() => setIsOpen(false)}
@@ -300,4 +300,4 @@ const SideNavBar: React.FC<PropsType> = (props) => {
   );
 };
 
-export default SideNavBar;
+export default FilterButton;

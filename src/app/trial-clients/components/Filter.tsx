@@ -19,7 +19,7 @@ interface PropsType {
   isLoading: boolean;
 }
 
-const SideNavBar: React.FC<PropsType> = (props) => {
+const FilterButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { filters, setFilters } = props;
 
@@ -229,4 +229,4 @@ const SideNavBar: React.FC<PropsType> = (props) => {
   );
 };
 
-export default SideNavBar;
+export default FilterButton;

@@ -10,7 +10,7 @@ interface PropsType {
   className?: string | undefined;
   LogoutAction: () => Promise<void>;
 }
-const SideNavBar: React.FC<PropsType> = (props) => {
+const FilterButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   let pathname = usePathname();
 
@@ -196,4 +196,4 @@ const SideNavBar: React.FC<PropsType> = (props) => {
   );
 };
 
-export default SideNavBar;
+export default FilterButton;

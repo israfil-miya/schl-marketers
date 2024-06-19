@@ -5,10 +5,10 @@ import { useSession } from 'next-auth/react';
 import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
 
 interface PropsType {
-  reportData: { [key: string]: any };
+  clientData: { [key: string]: any };
   isLoading: boolean;
   submitHandler: (
-    originalReportData: { [key: string]: any },
+    originalClientData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   ) => Promise<void>;
@@ -20,14 +20,14 @@ const EditButton: React.FC<PropsType> = (props) => {
   const [editedBy, setEditedBy] = useState<string>('');
 
   const [editedData, setEditedData] = useState<{ [key: string]: any }>({
-    ...props.reportData,
+    ...props.clientData,
     updated_by: session?.user?.real_name || '',
   });
 
   useEffect(() => {
     if (!isOpen) {
       setEditedData({
-        ...props.reportData,
+        ...props.clientData,
         updated_by: session?.user?.real_name || '',
       });
     }
@@ -71,7 +71,7 @@ const EditButton: React.FC<PropsType> = (props) => {
         disabled={props.isLoading}
         onClick={() => {
           setIsOpen(true);
-          setEditedBy(props.reportData.updated_by || '');
+          setEditedBy(props.clientData.updated_by || '');
         }}
         className="items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-2 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white p-2"
       >
@@ -100,7 +100,7 @@ const EditButton: React.FC<PropsType> = (props) => {
         >
           <header className="flex items-center align-middle justify-between px-4 py-2 border-b rounded-t">
             <h3 className="text-gray-900 text-lg lg:text-xl font-semibold dark:text-white uppercase">
-              Edit Report
+              Edit Client
             </h3>
             <button
               onClick={() => setIsOpen(false)}
@@ -467,7 +467,7 @@ const EditButton: React.FC<PropsType> = (props) => {
               <button
                 onClick={() => {
                   props.submitHandler(
-                    props.reportData,
+                    props.clientData,
                     editedData,
                     setEditedData,
                   );
