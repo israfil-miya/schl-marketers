@@ -6,7 +6,7 @@ const RnR = () => {
     <>
       <Header />
       <div className="container my-5 mt-5 h-100 md:mt-[15vh]">
-        <div className="mt-5 text-center">
+        <div className="my-5 text-center">
           <h1 className="mb-0 text-3xl">Office Rules and Regulations</h1>
           <p className="text-lg">April, 2024</p>
         </div>

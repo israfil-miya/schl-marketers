@@ -121,7 +121,7 @@ const ViewNotice: React.FC<ViewNoticeProps> = (props) => {
       {isLoading ? <p className="text-center">Loading...</p> : <></>}
       {!isLoading && (
         <div className="notice container mt-5 mb-3">
-          <div className="notice-header">
+          <div className="notice-header mb-4">
             <h2 className="mb-0 font-semibold text-3xl">{notice.title}</h2>
             <p className="text-md font-medium text-gray-600">
               {notice.createdAt
@@ -133,7 +133,7 @@ const ViewNotice: React.FC<ViewNoticeProps> = (props) => {
             </p>
           </div>
           <div
-            className="notice-body text-lg mt-2 mb-3"
+            className="notice-body text-lg my-3"
             dangerouslySetInnerHTML={{ __html: notice.description }}
           />
 

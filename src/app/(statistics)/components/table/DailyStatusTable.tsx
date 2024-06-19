@@ -60,14 +60,14 @@ const DailyStatusTable = () => {
 
   return (
     <div className="mt-6">
-      <h2 className="font-mono text-destructive font-extrabold text-2xl text-center uppercase">
+      <h2 className="font-mono text-destructive font-extrabold text-md sm:text-lg md:text-xl text-center uppercase">
         <span className="underline">DAILY TARGET:</span> 55 CALLS (30 NORMAL, 25
         RECALL), 20 LEADS, 10 TESTS/MONTH
       </h2>
       <div className="table-responsive text-center text-nowrap text-lg px-2 mt-1">
-        <table className="table table-bordered">
-          <thead className="table-dark">
-            <tr>
+        <table className="table table-bordered border">
+          <thead>
+            <tr className="bg-gray-200">
               <th>Calls</th>
               <th>Tests</th>
               <th>Prospects</th>
