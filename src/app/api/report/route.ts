@@ -251,6 +251,19 @@ async function handleGetAllReports(req: Request): Promise<{
 
     const searchQuery: Query = { ...query };
 
+    let sortQuery: Record<string, 1 | -1> = {
+      createdAt: -1,
+    };
+
+    // Sorting by followup date (ascending) if followup is pending and not a regular client (/pending-followups)
+    if (
+      followupDone == false &&
+      regularClient == false &&
+      searchQuery.is_lead == false
+    ) {
+      sortQuery = { followup_date: 1 };
+    }
+
     if (!query && isFilter == true && !generalSearchString) {
       return { data: 'No filter applied', status: 400 };
     } else {
@@ -279,9 +292,7 @@ async function handleGetAllReports(req: Request): Promise<{
         reports = await Report.aggregate([
           { $match: searchQuery },
           {
-            $sort: {
-              createdAt: -1,
-            },
+            $sort: sortQuery,
           },
           { $skip: skip },
           { $limit: ITEMS_PER_PAGE },
