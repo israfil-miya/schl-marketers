@@ -257,11 +257,15 @@ async function handleGetAllReports(req: Request): Promise<{
 
     // Sorting by followup date (ascending) if followup is pending and not a regular client (/pending-followups)
     if (
-      followupDone == false &&
-      regularClient == false &&
-      searchQuery.is_lead == false
+      followupDone === false &&
+      regularClient === false &&
+      searchQuery.is_lead === false
     ) {
-      sortQuery = { followup_date: 1 };
+      sortQuery = {
+        hasFollowupDate: 1, // Sort by presence of followup_date first (0 for missing, 1 for present)
+        followup_date: 1, // Then sort by followup_date ascending
+        createdAt: -1, // Finally, sort by createdAt descending
+      };
     }
 
     if (!query && isFilter == true && !generalSearchString) {
@@ -292,10 +296,24 @@ async function handleGetAllReports(req: Request): Promise<{
         reports = await Report.aggregate([
           { $match: searchQuery },
           {
-            $sort: sortQuery,
+            $addFields: {
+              hasFollowupDate: {
+                $cond: {
+                  if: { $eq: ['$followup_date', ''] },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
           },
+          { $sort: sortQuery },
           { $skip: skip },
           { $limit: ITEMS_PER_PAGE },
+          {
+            $project: {
+              hasFollowupDate: 0, // Remove the added field from the final output
+            },
+          },
         ]);
       } else {
         reports = await Report.find(searchQuery).lean();
