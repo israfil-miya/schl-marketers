@@ -629,7 +629,7 @@ async function handleGetTestOrdersTrend(req: Request): Promise<{
   }
 }
 
-async function handleGetDailyReportsStatus(req: Request): Promise<{
+async function handleGetReportsStatus(req: Request): Promise<{
   data: string | Record<string, number>;
   status: number;
 }> {
@@ -637,14 +637,14 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
     const marketerName: string = (headers().get('name') as string) || '';
     console.log(marketerName);
 
-    const date = moment().tz('Asia/Dhaka').format('YYYY-MM-DD');
+    const { fromDate, toDate } = await req.json();
 
     const totalCalls = await Report.countDocuments({
       marketer_name: marketerName,
       calling_date_history: {
         $elemMatch: {
-          $gte: date,
-          $lte: date,
+          $gte: fromDate,
+          $lte: toDate,
         },
       },
       is_lead: false,
@@ -654,8 +654,8 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
       marketer_name: marketerName,
       calling_date_history: {
         $elemMatch: {
-          $gte: date,
-          $lte: date,
+          $gte: fromDate,
+          $lte: toDate,
         },
       },
       is_lead: true,
@@ -665,8 +665,8 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
       marketer_name: marketerName,
       calling_date_history: {
         $elemMatch: {
-          $gte: date,
-          $lte: date,
+          $gte: fromDate,
+          $lte: toDate,
         },
       },
       is_test: true,
@@ -677,8 +677,8 @@ async function handleGetDailyReportsStatus(req: Request): Promise<{
       marketer_name: marketerName,
       calling_date_history: {
         $elemMatch: {
-          $gte: date,
-          $lte: date,
+          $gte: fromDate,
+          $lte: toDate,
         },
       },
       is_prospected: true,
@@ -723,7 +723,9 @@ export async function POST(req: Request) {
     case 'done-followup':
       res = await handleDoneFollowup(req);
       return NextResponse.json(res.data, { status: res.status });
-
+    case 'get-reports-status':
+      res = await handleGetReportsStatus(req);
+      return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });
   }
@@ -744,9 +746,6 @@ export async function GET(req: Request) {
       return NextResponse.json(res.data, { status: res.status });
     case 'get-test-orders-trend':
       res = await handleGetTestOrdersTrend(req);
-      return NextResponse.json(res.data, { status: res.status });
-    case 'get-daily-reports-status':
-      res = await handleGetDailyReportsStatus(req);
       return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });

@@ -19,6 +19,7 @@ const Cards = () => {
         }
         icon={
           <svg
+            className="fill-primary"
             width={32}
             height={32}
             xmlns="http://www.w3.org/2000/svg"
@@ -29,13 +30,14 @@ const Cards = () => {
         }
       />
       <Card
-        title="Inactive Clients"
-        description="Clients contacted over 2 months ago who haven't converted to regular customers."
+        title="Pending Prospects"
+        description="Prospects contacted over 2 months ago who haven't converted to regular customers and didn't give any test."
         onClick={() =>
           router.push(process.env.NEXT_PUBLIC_BASE_URL + '/stale-clients')
         }
         icon={
           <svg
+            className="fill-primary"
             width={32}
             height={32}
             xmlns="http://www.w3.org/2000/svg"
@@ -45,14 +47,16 @@ const Cards = () => {
           </svg>
         }
       />
+      {/* Here leads doesn't actually mean leads, it shows call reports with high conversion potential. in short, prospects */}
       <Card
-        title="Potential Clients"
-        description="Clients with high conversion potential."
+        title="Potential Leads"
+        description="Leads with high conversion potential."
         onClick={() =>
           router.push(process.env.NEXT_PUBLIC_BASE_URL + '/ideal-prospects')
         }
         icon={
           <svg
+            className="fill-primary"
             width={32}
             height={32}
             xmlns="http://www.w3.org/2000/svg"
@@ -70,6 +74,7 @@ const Cards = () => {
         }
         icon={
           <svg
+            className="fill-primary"
             width={32}
             height={32}
             xmlns="http://www.w3.org/2000/svg"

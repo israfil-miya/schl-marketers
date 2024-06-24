@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import fetchData from '@/utility/fetchdata';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
+import getTodayDate from '@/utility/gettodaysdate';
+import moment from 'moment-timezone';
+import FilterButton from './Filter';
 
 interface ReportsStatusState {
   totalCalls: number;
@@ -10,6 +13,23 @@ interface ReportsStatusState {
   totalLeads: number;
   totalProspects: number;
 }
+
+const countDays = (startDate: string, endDate: string): number => {
+  // Parse the input dates using moment
+  const start = moment.tz(startDate, 'YYYY-MM-DD', 'Asia/Dhaka');
+  const end = moment.tz(endDate, 'YYYY-MM-DD', 'Asia/Dhaka');
+
+  // Calculate the difference in days
+  const dayDifference = end.diff(start, 'days');
+
+  // If dates are equal, return 1
+  if (dayDifference === 0) {
+    return 1;
+  }
+
+  // Return the absolute value to ensure the difference is positive
+  return Math.abs(dayDifference) + 1;
+};
 
 const DailyStatusTable = () => {
   const [reportsStatus, setReportsStatus] = useState<ReportsStatusState>({
@@ -21,6 +41,11 @@ const DailyStatusTable = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { data: session } = useSession();
 
+  const [filters, setFilters] = useState({
+    fromDate: getTodayDate(),
+    toDate: getTodayDate(),
+  });
+
   const [callsTarget, setCallsTarget] = useState<number>(55);
   const [leadsTarget, setLeadsTarget] = useState<number>(20);
 
@@ -30,9 +55,10 @@ const DailyStatusTable = () => {
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL +
-        '/api/report?action=get-daily-reports-status';
+        '/api/report?action=get-reports-status';
       let options: {} = {
-        method: 'GET',
+        method: 'POST',
+        body: JSON.stringify(filters),
         headers: {
           name: session?.user.real_name,
           'Content-Type': 'application/json',
@@ -43,6 +69,8 @@ const DailyStatusTable = () => {
 
       if (response.ok) {
         setReportsStatus(response.data);
+        setCallsTarget(55 * countDays(filters.fromDate, filters.toDate));
+        setLeadsTarget(20 * countDays(filters.fromDate, filters.toDate));
       } else {
         toast.error(response.data);
       }
@@ -51,6 +79,7 @@ const DailyStatusTable = () => {
       toast.error('An error occurred while retrieving daily reports status');
     } finally {
       setIsLoading(false);
+      console.log(callsTarget, leadsTarget);
     }
   }
 
@@ -60,10 +89,20 @@ const DailyStatusTable = () => {
 
   return (
     <div className="mt-6">
-      <h2 className="font-mono text-destructive font-extrabold text-md sm:text-lg md:text-xl text-center uppercase">
-        <span className="underline">DAILY TARGET:</span> 55 CALLS (30 NORMAL, 25
-        RECALL), 20 LEADS, 10 TESTS/MONTH
-      </h2>
+      <div className="flex flex-col sm:flex-row justify-center gap-1 mb-2 sm:gap-4 sm:mb-0 items-center px-2">
+        <p className="font-mono inline-block text-destructive font-extrabold text-md sm:text-lg md:text-xl text-center uppercase">
+          <span className="underline">DAILY TARGET:</span> 55 CALLS (30 NORMAL,
+          25 RECALL), 20 LEADS, 10 TESTS/MONTH
+        </p>
+        <FilterButton
+          isLoading={isLoading}
+          submitHandler={getReportsStatus}
+          setFilters={setFilters}
+          filters={filters}
+          className="w-full justify-between sm:w-auto"
+        />
+      </div>
+
       <div className="table-responsive text-center text-nowrap text-lg px-2 mt-1">
         <table className="table table-bordered border">
           <thead>

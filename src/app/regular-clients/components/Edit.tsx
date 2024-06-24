@@ -407,33 +407,6 @@ const EditButton: React.FC<PropsType> = (props) => {
 
               <div className="flex gap-2 items-center">
                 <input
-                  name="is_prospected"
-                  checked={editedData.is_prospected}
-                  onChange={handleChange}
-                  id="prospecting-checkbox"
-                  type="checkbox"
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor="prospecting-checkbox" className="uppercase ">
-                  Prospecting
-                </label>
-              </div>
-              <div className="flex gap-2 items-center">
-                <input
-                  name="followup_done"
-                  checked={!editedData.followup_done}
-                  onChange={handleChange}
-                  id="followup-done-checkbox"
-                  type="checkbox"
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor="followup-done-checkbox" className="uppercase ">
-                  Followup Pending
-                </label>
-              </div>
-
-              <div className="flex gap-2 items-center">
-                <input
                   name="regular_client"
                   checked={editedData.regular_client}
                   onChange={handleChange}

@@ -13,7 +13,6 @@ interface PropsType {
     fromDate: string;
     toDate: string;
     test: boolean;
-    prospect: boolean;
     generalSearchString: string;
     show: 'all' | 'mine' | 'others';
   };
@@ -53,7 +52,6 @@ const FilterButton: React.FC<PropsType> = (props) => {
       fromDate: '',
       toDate: '',
       test: false,
-      prospect: false,
       generalSearchString: '',
       show: 'all',
     });
@@ -190,20 +188,6 @@ const FilterButton: React.FC<PropsType> = (props) => {
                   />
                   <label htmlFor="test-checkbox" className="uppercase ">
                     Test Job
-                  </label>
-                </div>
-
-                <div className="flex gap-2 items-center">
-                  <input
-                    name="prospect"
-                    checked={filters.prospect}
-                    onChange={handleChange}
-                    id="prospect-checkbox"
-                    type="checkbox"
-                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                  />
-                  <label htmlFor="prospect-checkbox" className="uppercase ">
-                    Prospect
                   </label>
                 </div>
               </div>

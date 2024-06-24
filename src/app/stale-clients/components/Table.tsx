@@ -50,7 +50,6 @@ const Table = () => {
     category: '',
     fromDate: '',
     toDate: '',
-    test: false,
     prospect: false,
     generalSearchString: '',
   });
@@ -73,6 +72,7 @@ const Table = () => {
         body: JSON.stringify({
           staleClient: true,
           regularClient: false,
+          test: false,
           marketerName: session?.user?.real_name,
         }),
       };
@@ -111,6 +111,7 @@ const Table = () => {
           ...filters,
           staleClient: true,
           regularClient: false,
+          test: false,
           marketerName: session?.user?.real_name,
         }),
       };

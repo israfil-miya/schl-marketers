@@ -8,9 +8,12 @@ interface PropsType {
   msg?: string | undefined;
   className?: string | undefined;
 }
+import { useSession } from 'next-auth/react';
 
 const Nav: React.FC<PropsType> = (props) => {
-  let { msg = 'Have a good day!' } = props;
+  const { data: session } = useSession();
+
+  let { msg = 'Welcome, ' + session?.user.real_name + '!' } = props;
   let pathname = usePathname();
 
   console.log(pathname);

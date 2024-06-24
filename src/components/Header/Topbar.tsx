@@ -4,6 +4,7 @@ import Timecards from './Timecards';
 import LogOut from './Logout';
 import SideNavBar from './Sidebar';
 import LogoutAction from './Logout/LogoutAction';
+import AccountButton from './Accountbutton';
 
 const timezones: string[] = [
   'Europe/Paris',
@@ -27,7 +28,11 @@ const Topbar: React.FC = () => {
       <Timecards className="max-lg:hidden" timezones={timezones} />
 
       <SideNavBar LogoutAction={LogoutAction} className="block lg:hidden" />
-      <LogOut className="max-lg:hidden" />
+
+      <div className="max-lg:hidden flex gap-2">
+        <AccountButton />
+        <LogOut />
+      </div>
     </div>
   );
 };

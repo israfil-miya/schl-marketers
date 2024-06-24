@@ -47,7 +47,6 @@ const Table = () => {
     fromDate: '',
     toDate: '',
     test: false,
-    prospect: false,
     generalSearchString: '',
     show: 'all' as 'all' | 'mine' | 'others',
   });
@@ -351,7 +350,7 @@ const Table = () => {
       {!isLoading &&
         (clients?.items?.length !== 0 ? (
           <div className="table-responsive text-nowrap text-sm">
-            <table className="table">
+            <table className="table table-striped table-bordered">
               <thead className="table-dark">
                 <tr>
                   <th>#</th>
@@ -368,29 +367,13 @@ const Table = () => {
                   <th>Calling Status</th>
                   <th>LinkedIn</th>
                   <th>Test</th>
-                  <th>Prospected</th>
                   <th>Manage</th>
                 </tr>
               </thead>
               <tbody>
                 {clients?.items?.map((item, index) => {
-                  let tableRowColor = 'table-secondary';
-
-                  if (item.is_prospected) {
-                    if (item?.prospect_status == 'high_interest') {
-                      tableRowColor = 'table-success';
-                    } else if (item?.prospect_status == 'low_interest') {
-                      tableRowColor = 'table-warning';
-                    }
-                  } else {
-                    tableRowColor = 'table-danger';
-                  }
-
                   return (
-                    <tr
-                      key={item._id}
-                      className={tableRowColor ? tableRowColor : ''}
-                    >
+                    <tr key={item._id}>
                       <td>{index + 1 + itemPerPage * (page - 1)}</td>
                       <td>
                         {item.calling_date &&
@@ -430,11 +413,6 @@ const Table = () => {
                         )}
                       </td>
                       <td>{item.is_test ? 'Yes' : 'No'}</td>
-                      <td>
-                        {item.is_prospected
-                          ? `Yes (${item.followup_done ? 'Done' : 'Pending'})`
-                          : 'No'}
-                      </td>
                       <td
                         className="text-center"
                         style={{ verticalAlign: 'middle' }}

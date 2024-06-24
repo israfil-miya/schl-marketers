@@ -52,6 +52,7 @@ const Table = () => {
     toDate: '',
     prospect: false,
     generalSearchString: '',
+    show: 'all' as 'all' | 'mine' | 'others',
   });
 
   async function getAllReports() {
@@ -70,9 +71,9 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          show: 'all',
           test: true,
           regularClient: false,
-          marketerName: session?.user?.real_name,
         }),
       };
 
@@ -110,7 +111,6 @@ const Table = () => {
           ...filters,
           test: true,
           regularClient: false,
-          marketerName: session?.user?.real_name,
         }),
       };
 
@@ -469,7 +469,6 @@ const Table = () => {
                 <tr>
                   <th>#</th>
                   <th>Calling Date</th>
-                  <th>Marketer</th>
                   <th>Followup Date</th>
                   <th>Country</th>
                   <th>Website</th>
@@ -510,7 +509,6 @@ const Table = () => {
                         {item.calling_date &&
                           convertToDDMMYYYY(item.calling_date)}
                       </td>
-                      <td>{item.marketer_name}</td>
                       <td>
                         {item.followup_date &&
                           convertToDDMMYYYY(item.followup_date)}
