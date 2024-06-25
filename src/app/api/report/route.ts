@@ -26,6 +26,20 @@ async function handleEditReport(req: Request): Promise<{
   try {
     let form_data = await req.json();
 
+    // If the regular client status is changed, update the onboard date
+    let { regular_client } = form_data;
+    if (
+      regular_client !== undefined &&
+      regular_client !== null &&
+      regular_client !== ''
+    ) {
+      if (regular_client) {
+        form_data.onboard_date = getTodayDate();
+      } else {
+        form_data.onboard_date = '';
+      }
+    }
+
     let updatedReportData = await Report.findByIdAndUpdate(
       form_data._id,
       form_data,
@@ -209,7 +223,10 @@ async function handleGetAllReports(req: Request): Promise<{
     query.is_lead = onlyLead || false;
 
     addIfDefined(query, 'followup_done', followupDone);
-    addIfDefined(query, 'regular_client', regularClient);
+
+    if(regularClient) {
+      query.onboard_date = { $ne: '' };
+    }
 
     if (staleClient) {
       const twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');

@@ -65,7 +65,6 @@ const ReportSchema = new mongoose.Schema<Report>(
     is_prospected: { type: Boolean, default: false },
     prospect_status: { type: String, default: '' },
     is_lead: { type: Boolean, default: false },
-    regular_client: { type: Boolean, default: false },
     lead_withdrawn: { type: Boolean, default: false },
     test_given_date_history: { type: [String] },
     onboard_date: { type: String, default: '' },
