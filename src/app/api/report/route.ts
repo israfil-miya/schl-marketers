@@ -34,9 +34,13 @@ async function handleEditReport(req: Request): Promise<{
       regular_client !== ''
     ) {
       if (regular_client) {
-        form_data.onboard_date = getTodayDate();
+        if (form_data.onboard_date === '') {
+          form_data.onboard_date = getTodayDate();
+        }
       } else {
-        form_data.onboard_date = '';
+        if (form_data.onboard_date !== '') {
+          form_data.onboard_date = '';
+        }
       }
     }
 
@@ -141,6 +145,9 @@ async function handleAddNewReport(req: Request): Promise<{
       prospect_status: form_data.prospectingStatus,
       is_lead: form_data.newLead,
       lead_withdrawn: false,
+      regular_client: false,
+      test_given_date_history: form_data.testGivenDateHistory || [],
+      onboard_date: '',
     };
 
     if (data.is_lead) {
@@ -223,10 +230,7 @@ async function handleGetAllReports(req: Request): Promise<{
     query.is_lead = onlyLead || false;
 
     addIfDefined(query, 'followup_done', followupDone);
-
-    if(regularClient) {
-      query.onboard_date = { $ne: '' };
-    }
+    addIfDefined(query, 'regular_client', regularClient);
 
     if (staleClient) {
       const twoMonthsAgo = moment().subtract(2, 'months').format('YYYY-MM-DD');
@@ -543,7 +547,7 @@ async function handleGetClientsOnboard(req: Request): Promise<{
       marketer_name: marketerName,
       createdAt: { $gte: startDate, $lte: endDate },
     })
-      .select('createdAt')
+      .select('onboard_date')
       .exec();
 
     const result: ReportCount = {};
@@ -560,7 +564,7 @@ async function handleGetClientsOnboard(req: Request): Promise<{
 
     // Count the reports per month
     reports.forEach((report) => {
-      const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
+      const month = moment(report.onboard_date).format('MMMM_YYYY').toLowerCase();
       if (result.hasOwnProperty(month)) {
         result[month] += 1;
       }

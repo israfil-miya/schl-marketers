@@ -17,6 +17,7 @@ export interface Query {
   onboard_date?: string | { [key: string]: RegexQuery | string | undefined };
   prospect_status?: RegexQuery;
   calling_date_history?: { [key: string]: any };
+  regular_client?: boolean;
   $or?: { [key: string]: RegexQuery }[];
 }
 
