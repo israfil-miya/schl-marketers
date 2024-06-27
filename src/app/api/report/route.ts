@@ -241,12 +241,6 @@ async function handleGetAllReports(req: Request): Promise<{
     addRegexField(query, 'marketer_name', marketerName, true);
     addRegexField(query, 'prospect_status', prospectStatus, true);
 
-    // addBooleanField(query, 'is_test', test);
-
-    if (test === true) {
-      query.test_given_date_history = { $exists: true, $ne: [] };
-    }
-
     addBooleanField(query, 'is_prospected', prospect);
 
     query.is_lead = onlyLead || false;
@@ -271,6 +265,16 @@ async function handleGetAllReports(req: Request): Promise<{
 
     if (!fromDate && !toDate && !staleClient) {
       delete query.calling_date_history;
+    }
+
+    // if is_test filter is true
+    if (test === true) {
+      if (query.calling_date_history) {
+        query.test_given_date_history = query.calling_date_history;
+        delete query.calling_date_history;
+      } else {
+        query.test_given_date_history = { $exists: true, $ne: [] };
+      }
     }
 
     // regular client view filter (/regular-clients)
@@ -647,10 +651,8 @@ async function handleGetTestOrdersTrend(req: Request): Promise<{
       is_lead: false,
       marketer_name: marketerName,
       test_given_date_history: {
-        $elemMatch: {
-          $gte: startDate,
-          $lte: endDate,
-        },
+        $exists: true,
+        $ne: [],
       },
     })
       .select('test_given_date_history')
@@ -721,10 +723,8 @@ async function handleGetReportsStatus(req: Request): Promise<{
       is_lead: false,
       marketer_name: marketerName,
       test_given_date_history: {
-        $elemMatch: {
-          $gte: fromDate,
-          $lte: toDate,
-        },
+        $exists: true,
+        $ne: [],
       },
     })
       .select('test_given_date_history')

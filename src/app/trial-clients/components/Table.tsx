@@ -470,6 +470,7 @@ const Table = () => {
                   <th>#</th>
                   <th>Calling Date</th>
                   <th>Followup Date</th>
+                  <th>Last Test Date</th>
                   <th>Country</th>
                   <th>Website</th>
                   <th>Category</th>
@@ -513,7 +514,14 @@ const Table = () => {
                         {item.followup_date &&
                           convertToDDMMYYYY(item.followup_date)}
                       </td>
-
+                      <td>
+                        {item.test_given_date_history?.length &&
+                          convertToDDMMYYYY(
+                            item.test_given_date_history[
+                              item.test_given_date_history.length - 1
+                            ],
+                          )}
+                      </td>
                       <td>{item.country}</td>
                       <td>
                         {item.website.length ? (

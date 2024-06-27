@@ -356,6 +356,7 @@ const Table = () => {
                   <th>#</th>
                   <th>Calling Date</th>
                   <th>Followup Date</th>
+                  <th>Onboard Date</th>
                   <th>Country</th>
                   <th>Website</th>
                   <th>Category</th>
@@ -382,6 +383,10 @@ const Table = () => {
                       <td>
                         {item.followup_date &&
                           convertToDDMMYYYY(item.followup_date)}
+                      </td>
+                      <td>
+                        {item.onboard_date &&
+                          convertToDDMMYYYY(item.onboard_date)}
                       </td>
 
                       <td>{item.country}</td>

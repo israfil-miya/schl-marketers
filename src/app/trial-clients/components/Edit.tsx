@@ -346,53 +346,80 @@ const EditButton: React.FC<PropsType> = (props) => {
               <div>
                 <label
                   className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2"
-                  htmlFor="grid-password"
+                  htmlFor="grid-last-name"
                 >
-                  Linkedin
+                  Test Given Date History
                   <span className="cursor-pointer has-tooltip">
                     &#9432;
                     <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
-                      Separated by space
+                      Chan&apos;t change directly
                     </span>
                   </span>
                 </label>
-                <input
+                <textarea
+                  rows={5}
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  type="text"
-                  name="linkedin"
-                  value={editedData.linkedin}
-                  onChange={handleChange}
+                  name="test_given_date_history"
+                  value={editedData.test_given_date_history
+                    ?.map((date: string) => `${convertToDDMMYYYY(date)}`)
+                    .join('\n')}
+                  // onChange={handleChange}
+                  disabled
                 />
               </div>
 
-              {editedData.is_prospected && (
+              <div className="flex flex-col gap-2">
                 <div>
                   <label
-                    className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2"
-                    htmlFor="grid-last-name"
+                    className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2"
+                    htmlFor="grid-password"
                   >
-                    Prospect Status
+                    Linkedin
+                    <span className="cursor-pointer has-tooltip">
+                      &#9432;
+                      <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
+                        Separated by space
+                      </span>
+                    </span>
                   </label>
-                  <select
-                    value={editedData.prospect_status}
-                    onChange={(e) =>
-                      setEditedData((prevData) => ({
-                        ...prevData,
-                        prospect_status: e.target.value,
-                      }))
-                    }
-                    defaultValue={''}
-                    required
+                  <input
                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                  >
-                    <option value={''} className="text-gray-400">
-                      Select prospect status
-                    </option>
-                    <option value="high_interest">High Interest</option>
-                    <option value="low_interest">Low Interest</option>
-                  </select>
+                    type="text"
+                    name="linkedin"
+                    value={editedData.linkedin}
+                    onChange={handleChange}
+                  />
                 </div>
-              )}
+
+                {editedData.is_prospected && (
+                  <div>
+                    <label
+                      className="uppercase tracking-wide text-gray-700 text-sm font-bold block mb-2"
+                      htmlFor="grid-last-name"
+                    >
+                      Prospect Status
+                    </label>
+                    <select
+                      value={editedData.prospect_status}
+                      onChange={(e) =>
+                        setEditedData((prevData) => ({
+                          ...prevData,
+                          prospect_status: e.target.value,
+                        }))
+                      }
+                      defaultValue={''}
+                      required
+                      className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option value={''} className="text-gray-400">
+                        Select prospect status
+                      </option>
+                      <option value="high_interest">High Interest</option>
+                      <option value="low_interest">Low Interest</option>
+                    </select>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="checkboxes flex flex-col sm:flex-row gap-4 mt-4">
