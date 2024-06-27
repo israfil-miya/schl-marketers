@@ -27,7 +27,7 @@ async function handleEditReport(req: Request): Promise<{
     let form_data = await req.json();
 
     // If the regular client status is changed, update the onboard date
-    let { regular_client } = form_data;
+    let { regular_client, is_test, test_given_date_history } = form_data;
     if (
       regular_client !== undefined &&
       regular_client !== null &&
@@ -42,6 +42,23 @@ async function handleEditReport(req: Request): Promise<{
           form_data.onboard_date = '';
         }
       }
+    }
+
+    // If the test status is changed, add the test given date to the history
+    if (is_test) {
+      if (test_given_date_history.length === 0) {
+        form_data.test_given_date_history = [getTodayDate()];
+      } else {
+        let lastTestDate =
+          test_given_date_history[test_given_date_history.length - 1];
+        if (lastTestDate !== getTodayDate()) {
+          form_data.test_given_date_history = [
+            ...test_given_date_history,
+            getTodayDate(),
+          ];
+        }
+      }
+      is_test = false;
     }
 
     let updatedReportData = await Report.findByIdAndUpdate(
@@ -140,13 +157,13 @@ async function handleAddNewReport(req: Request): Promise<{
       calling_date_history: [form_data.callingDate],
       updated_by: null,
       followup_done: form_data.followupDone,
-      is_test: form_data.testJob,
+      is_test: false,
       is_prospected: form_data.prospecting,
       prospect_status: form_data.prospectingStatus,
       is_lead: form_data.newLead,
       lead_withdrawn: false,
       regular_client: false,
-      test_given_date_history: form_data.testGivenDateHistory || [],
+      test_given_date_history: form_data.testJob ? [form_data.testJob] : [],
       onboard_date: '',
     };
 
@@ -224,7 +241,12 @@ async function handleGetAllReports(req: Request): Promise<{
     addRegexField(query, 'marketer_name', marketerName, true);
     addRegexField(query, 'prospect_status', prospectStatus, true);
 
-    addBooleanField(query, 'is_test', test);
+    // addBooleanField(query, 'is_test', test);
+
+    if (test === true) {
+      query.test_given_date_history = { $exists: true, $ne: [] };
+    }
+
     addBooleanField(query, 'is_prospected', prospect);
 
     query.is_lead = onlyLead || false;
@@ -401,13 +423,15 @@ async function handleWithdrawLead(req: Request): Promise<{
         linkedin: leadData.linkedin,
         marketer_id: leadData.marketer_id,
         marketer_name: leadData.marketer_name,
-        is_test: leadData.is_test,
+        is_test: false,
         is_prospected: leadData.is_prospected,
         prospect_status: leadData.prospect_status,
         is_lead: false,
         lead_withdrawn: true,
         followup_done: leadData.followup_done,
         regular_client: leadData.regular_client,
+        test_given_date_history: leadData.test_given_date_history || [],
+        onboard_date: '',
       });
 
       if (reportData) {
@@ -564,7 +588,9 @@ async function handleGetClientsOnboard(req: Request): Promise<{
 
     // Count the reports per month
     reports.forEach((report) => {
-      const month = moment(report.onboard_date).format('MMMM_YYYY').toLowerCase();
+      const month = moment(report.onboard_date)
+        .format('MMMM_YYYY')
+        .toLowerCase();
       if (result.hasOwnProperty(month)) {
         result[month] += 1;
       }
@@ -605,19 +631,8 @@ async function handleGetTestOrdersTrend(req: Request): Promise<{
       [key: string]: number;
     }
 
-    // Optimize the query with indexing and projections
-    const reports = await Report.find({
-      is_lead: false,
-      is_test: true,
-      marketer_name: marketerName,
-      createdAt: { $gte: startDate, $lte: endDate },
-    })
-      .select('createdAt')
-      .exec();
-
-    const result: ReportCount = {};
-
     // Initialize the result object with zero counts
+    const result: ReportCount = {};
     for (let i = 0; i <= 12; i++) {
       const month = now
         .clone()
@@ -627,12 +642,31 @@ async function handleGetTestOrdersTrend(req: Request): Promise<{
       result[month] = 0;
     }
 
-    // Count the reports per month
+    // Optimize the query with indexing, projections, and date range filtering
+    const reports = await Report.find({
+      is_lead: false,
+      marketer_name: marketerName,
+      test_given_date_history: {
+        $elemMatch: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      },
+    })
+      .select('test_given_date_history')
+      .exec();
+
+    // Count the test_given_date_history dates per month
     reports.forEach((report) => {
-      const month = moment(report.createdAt).format('MMMM_YYYY').toLowerCase();
-      if (result.hasOwnProperty(month)) {
-        result[month] += 1;
-      }
+      report.test_given_date_history.forEach((testDate: string) => {
+        const testMoment = moment(testDate);
+        if (testMoment.isBetween(startDate, endDate, 'day', '[]')) {
+          const month = testMoment.format('MMMM_YYYY').toLowerCase();
+          if (result.hasOwnProperty(month)) {
+            result[month] += 1;
+          }
+        }
+      });
     });
 
     // Sort the result by month
@@ -682,16 +716,26 @@ async function handleGetReportsStatus(req: Request): Promise<{
       is_lead: true,
     });
 
-    const totalTests = await Report.countDocuments({
+    let totalTests: number = 0;
+    const testReports = await Report.find({
+      is_lead: false,
       marketer_name: marketerName,
-      calling_date_history: {
+      test_given_date_history: {
         $elemMatch: {
           $gte: fromDate,
           $lte: toDate,
         },
       },
-      is_test: true,
-      is_lead: false,
+    })
+      .select('test_given_date_history')
+      .exec();
+    testReports.forEach((report) => {
+      report.test_given_date_history.forEach((testDate: string) => {
+        const testMoment = moment(testDate);
+        if (testMoment.isBetween(fromDate, toDate, 'day', '[]')) {
+          totalTests += 1;
+        }
+      });
     });
 
     const totalProspects = await Report.countDocuments({
@@ -705,8 +749,6 @@ async function handleGetReportsStatus(req: Request): Promise<{
       is_prospected: true,
       is_lead: false,
     });
-
-    console.log(totalCalls, totalLeads, totalTests, totalProspects);
 
     let data = {
       totalCalls: totalCalls || 0,

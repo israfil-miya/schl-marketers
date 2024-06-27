@@ -10,7 +10,7 @@ export interface Query {
   marketer_name?:
     | RegexQuery
     | { [key: string]: RegexQuery | string | undefined };
-  is_test?: boolean;
+  // is_test?: boolean;
   is_prospected?: boolean;
   is_lead?: boolean;
   followup_done?: boolean;
@@ -18,6 +18,7 @@ export interface Query {
   prospect_status?: RegexQuery;
   calling_date_history?: { [key: string]: any };
   regular_client?: boolean;
+  test_given_date_history?: { [key: string]: any };
   $or?: { [key: string]: RegexQuery }[];
 }
 

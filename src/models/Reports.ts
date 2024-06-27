@@ -19,7 +19,7 @@ interface Report {
   calling_date_history: string[];
   updated_by: string | null;
   followup_done: boolean;
-  is_test: boolean;
+  // is_test: boolean;
   is_prospected: boolean;
   prospect_status: string;
   is_lead: boolean;
@@ -61,7 +61,7 @@ const ReportSchema = new mongoose.Schema<Report>(
     calling_date_history: { type: [String] },
     updated_by: { type: String, default: null },
     followup_done: { type: Boolean, default: false },
-    is_test: { type: Boolean, default: false },
+    // is_test: { type: Boolean, default: false },
     is_prospected: { type: Boolean, default: false },
     prospect_status: { type: String, default: '' },
     is_lead: { type: Boolean, default: false },
