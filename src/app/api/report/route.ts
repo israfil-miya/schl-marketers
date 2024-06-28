@@ -696,15 +696,20 @@ async function handleGetReportsStatus(req: Request): Promise<{
 
     const { fromDate, toDate } = await req.json();
 
-    const totalCalls = await Report.countDocuments({
+    let totalCalls: number = 0;
+    const callReports = await Report.find({
       marketer_name: marketerName,
-      calling_date_history: {
-        $elemMatch: {
-          $gte: fromDate,
-          $lte: toDate,
-        },
-      },
       is_lead: false,
+    })
+      .select('calling_date_history')
+      .exec();
+    callReports.forEach((report) => {
+      report.calling_date_history.forEach((callDate: string) => {
+        const callMoment = moment(callDate);
+        if (callMoment.isBetween(fromDate, toDate, 'day', '[]')) {
+          totalCalls += 1;
+        }
+      });
     });
 
     const totalLeads = await Report.countDocuments({
