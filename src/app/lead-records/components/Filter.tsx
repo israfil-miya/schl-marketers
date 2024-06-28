@@ -15,6 +15,7 @@ interface PropsType {
     test: boolean;
     prospect: boolean;
     generalSearchString: string;
+    show: 'all' | 'mine' | 'others';
   };
   setFilters: React.Dispatch<React.SetStateAction<any>>;
   isLoading: boolean;
@@ -54,6 +55,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
       test: false,
       prospect: false,
       generalSearchString: '',
+      show: 'all',
     });
   };
 
@@ -203,6 +205,59 @@ const FilterButton: React.FC<PropsType> = (props) => {
                   <label htmlFor="prospect-checkbox" className="uppercase ">
                     Prospect
                   </label>
+                </div>
+              </div>
+
+              <div className="w-full mb-4">
+                <label className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2">
+                  View Options
+                </label>
+
+                <div className="radios flex flex-col sm:flex-row gap-1 sm:gap-4">
+                  <div className="flex gap-2 items-center">
+                    <input
+                      name="show"
+                      checked={filters.show === 'mine'}
+                      onChange={handleChange}
+                      id="showMine-radio"
+                      value="mine"
+                      type="radio"
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="showMine-radio" className="uppercase">
+                      Show Mine
+                    </label>
+                  </div>
+
+                  <div className="flex gap-2 items-center">
+                    <input
+                      name="show"
+                      checked={filters.show === 'others'}
+                      onChange={handleChange}
+                      id="showOthers-radio"
+                      value="others"
+                      type="radio"
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="showOthers-radio" className="uppercase">
+                      Show Others
+                    </label>
+                  </div>
+
+                  <div className="flex gap-2 items-center">
+                    <input
+                      name="show"
+                      checked={filters.show === 'all'}
+                      onChange={handleChange}
+                      id="showAll-radio"
+                      value="all"
+                      type="radio"
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="showAll-radio" className="uppercase">
+                      Show All
+                    </label>
+                  </div>
                 </div>
               </div>
 

@@ -52,6 +52,7 @@ const Table = () => {
     test: false,
     prospect: false,
     generalSearchString: '',
+    show: 'all' as 'all' | 'mine' | 'others',
   });
 
   async function getAllLeads() {
@@ -70,8 +71,8 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          show: 'all',
           onlyLead: true,
-          marketerName: session?.user?.real_name,
         }),
       };
 
@@ -108,7 +109,6 @@ const Table = () => {
         body: JSON.stringify({
           ...filters,
           onlyLead: true,
-          marketerName: session?.user?.real_name,
         }),
       };
 
