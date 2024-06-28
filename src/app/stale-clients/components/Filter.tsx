@@ -108,7 +108,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
               </svg>
             </button>
           </header>
-          <div className="overflow-y-scroll sm:overflow-hidden max-h-[70vh] p-4">
+          <div className="overflow-y-scroll max-h-[70vh] p-4">
             <div className="regular-search">
               <div className="grid grid-cols-1 gap-x-3 gap-y-4">
                 <div className="">

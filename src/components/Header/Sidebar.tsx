@@ -39,7 +39,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
       </label>
 
       <Drawer title="Menu" isOpen={isOpen} setIsOpen={setIsOpen}>
-        <nav className="flex flex-col space-y-1 overflow-y-scroll sm:overflow-hidden">
+        <nav className="flex flex-col space-y-1 overflow-y-scroll">
           <Link
             href="/"
             className={cn(
