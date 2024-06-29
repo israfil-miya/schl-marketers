@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import fetchData from '@/utility/fetchdata';
 import { useSearchParams } from 'next/navigation';
+import isValidUrl from '@/utility/validurlcheck';
 
 import { toast } from 'sonner';
 
@@ -33,17 +34,75 @@ const Form: React.FC<propsType> = (props) => {
     newLead: false,
   });
 
+  const inputValidations = (reportData: any) => {
+    // check if all required fields are filled
+    if (
+      reportData.country === '' ||
+      reportData.website === '' ||
+      reportData.category === '' ||
+      reportData.company === '' ||
+      reportData.contactPerson === '' ||
+      reportData.designation === ''
+    ) {
+      toast.error('All required fields must be filled');
+      return false;
+    }
+
+    // check if website and linkedin are valid urls
+    if (reportData.website && !isValidUrl(reportData.website)) {
+      toast.error('Invalid website URL');
+      return false;
+    }
+
+    if (reportData.linkedin && !isValidUrl(reportData.linkedin)) {
+      toast.error('Invalid linkedin URL');
+      return false;
+    }
+
+    // check country, company, category, contact person, designation are not a link
+    if (isValidUrl(reportData.country)) {
+      toast.error('Country cannot be a URL');
+      return false;
+    }
+
+    if (isValidUrl(reportData.company)) {
+      toast.error('Company name cannot be a URL');
+      return false;
+    }
+
+    if (isValidUrl(reportData.category)) {
+      toast.error('Category cannot be a URL');
+      return false;
+    }
+
+    if (isValidUrl(reportData.contactPerson)) {
+      toast.error('Contact person name cannot be a URL');
+      return false;
+    }
+
+    if (isValidUrl(reportData.designation)) {
+      toast.error('Designation cannot be a URL');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleAddNewReportFormSubmit = async (e: React.FormEvent) => {
-    setLoading(true);
-    e.preventDefault();
     try {
+      e.preventDefault();
       if (!reportData.followupDone && reportData.followupDate === '') {
         toast.error(
           'Followup date is required because followup is set as pending for the report',
         );
-        setLoading(false);
         return;
       }
+
+      if (!inputValidations(reportData)) {
+        return;
+      }
+
+      setLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=add-new-report';
@@ -309,7 +368,7 @@ const Form: React.FC<propsType> = (props) => {
             name="email"
             value={reportData.email}
             onChange={handleChange}
-            type="text"
+            type="email"
             placeholder="Contact person's/company's email"
           />
         </div>

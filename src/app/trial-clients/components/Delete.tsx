@@ -5,7 +5,11 @@ import { useSession } from 'next-auth/react';
 
 interface PropsType {
   reportData: { [key: string]: any };
-  submitHandler: (reportId: string, reqBy: string) => Promise<void>;
+  submitHandler: (
+    originalReportData: { [key: string]: any },
+    reportId: string,
+    reqBy: string,
+  ) => Promise<void>;
 }
 const DeleteButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -77,6 +81,7 @@ const DeleteButton: React.FC<PropsType> = (props) => {
             <button
               onClick={() => {
                 props.submitHandler(
+                  props.reportData,
                   props.reportData?._id,
                   session?.user?.real_name || '',
                 );

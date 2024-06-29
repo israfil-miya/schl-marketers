@@ -556,7 +556,9 @@ const Table = () => {
                           'No link provided'
                         )}
                       </td>
-                      <td>{item.is_test ? 'Yes' : 'No'}</td>
+                      <td>
+                        {item.test_given_date_history?.length ? 'Yes' : 'No'}
+                      </td>
                       <td>
                         {item.is_prospected
                           ? `Yes (${item.followup_done ? 'Done' : 'Pending'})`

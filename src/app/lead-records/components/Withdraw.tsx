@@ -5,7 +5,11 @@ import { useSession } from 'next-auth/react';
 
 interface PropsType {
   leadData: { [key: string]: any };
-  submitHandler: (reportId: string, reqBy: string) => Promise<void>;
+  submitHandler: (
+    originalLeadData: { [key: string]: any },
+    leadId: string,
+    reqBy: string,
+  ) => Promise<void>;
 }
 const WithdrawLeadButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -79,6 +83,7 @@ const WithdrawLeadButton: React.FC<PropsType> = (props) => {
             <button
               onClick={() => {
                 props.submitHandler(
+                  props.leadData,
                   props.leadData?._id,
                   session?.user?.real_name || '',
                 );

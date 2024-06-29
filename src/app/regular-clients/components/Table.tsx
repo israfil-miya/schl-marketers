@@ -131,7 +131,7 @@ const Table = () => {
     reqBy: string,
   ) {
     try {
-      if (originalClientData.marketer_name !== session?.user?.real_name) {
+      if (originalClientData.marketer_name !== reqBy) {
         toast.error('You are not allowed to delete this client');
         return;
       }
@@ -170,11 +170,9 @@ const Table = () => {
   ) {
     try {
       if (originalClientData.marketer_name !== session?.user?.real_name) {
-        toast.error('You are not allowed to edit this clients data');
+        toast.error("You are not allowed to edit this client's data");
         return;
       }
-
-      setIsLoading(true);
 
       if (!editedData.followup_done && editedData.followup_date === '') {
         toast.error(
@@ -184,9 +182,10 @@ const Table = () => {
           ...originalClientData,
           updated_by: session?.user?.real_name || '',
         });
-        setIsLoading(false);
         return;
       }
+
+      setIsLoading(true);
 
       const editReportUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=edit-report`;
       const editOptions = {
@@ -417,7 +416,9 @@ const Table = () => {
                           'No link provided'
                         )}
                       </td>
-                      <td>{item.is_test ? 'Yes' : 'No'}</td>
+                      <td>
+                        {item.test_given_date_history?.length ? 'Yes' : 'No'}
+                      </td>
                       <td
                         className="text-center"
                         style={{ verticalAlign: 'middle' }}

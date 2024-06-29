@@ -129,8 +129,18 @@ const Table = () => {
     return;
   }
 
-  async function deleteLead(reportId: string, reqBy: string) {
+  async function deleteLead(
+    originalLeadData: { [key: string]: any },
+    leadId: string,
+    reqBy: string,
+  ) {
     try {
+      // block delete action if the lead is others and the user is not the one who created the lead
+      if (originalLeadData.marketer_name !== reqBy) {
+        toast.error('You are not allowed to delete this lead');
+        return;
+      }
+
       let url: string = process.env.NEXT_PUBLIC_PORTAL_URL + '/api/approval';
       let options: {} = {
         method: 'POST',
@@ -140,7 +150,7 @@ const Table = () => {
         body: JSON.stringify({
           req_type: 'Report Delete',
           req_by: reqBy,
-          id: reportId,
+          id: leadId,
         }),
       };
 
@@ -159,24 +169,33 @@ const Table = () => {
   }
 
   async function editLead(
-    originalReportData: { [key: string]: any },
+    originalLeadData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   ) {
     try {
-      setIsLoading(true);
-
       if (!editedData.followup_done && editedData.followup_date === '') {
         toast.error(
           'Followup date is required because followup is set as pending for this lead',
         );
         setEditedData({
-          ...originalReportData,
+          ...originalLeadData,
           updated_by: session?.user?.real_name || '',
         });
-        setIsLoading(false);
         return;
       }
+
+      // block edit action if the lead is others and the user is not the one who created the lead
+      if (originalLeadData.marketer_name !== session?.user.real_name) {
+        toast.error('You are not allowed to edit this lead');
+        setEditedData({
+          ...originalLeadData,
+          updated_by: session?.user?.real_name || '',
+        });
+        return;
+      }
+
+      setIsLoading(true);
 
       const editReportUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=edit-report`;
       const editOptions = {
@@ -202,15 +221,25 @@ const Table = () => {
       toast.error('An error occurred while editing the lead');
     } finally {
       setEditedData({
-        ...originalReportData,
+        ...originalLeadData,
         updated_by: session?.user?.real_name || '',
       });
       setIsLoading(false);
     }
   }
 
-  async function withdrawLead(leadId: string, reqBy: string) {
+  async function withdrawLead(
+    originalLeadData: { [key: string]: any },
+    leadId: string,
+    reqBy: string,
+  ) {
     try {
+      // block withdraw action if the lead is others and the user is not the one who created the lead
+      if (originalLeadData.marketer_name !== reqBy) {
+        toast.error('You are not allowed to withdraw this lead');
+        return;
+      }
+
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=withdraw-lead';
       let options: {} = {
@@ -474,7 +503,9 @@ const Table = () => {
                           'No link provided'
                         )}
                       </td>
-                      <td>{item.is_test ? 'Yes' : 'No'}</td>
+                      <td>
+                        {item.test_given_date_history?.length ? 'Yes' : 'No'}
+                      </td>
                       <td>
                         {item.is_prospected
                           ? `Yes (${item.followup_done ? 'Done' : 'Pending'})`
@@ -492,11 +523,11 @@ const Table = () => {
                               <EditButton
                                 isLoading={isLoading}
                                 submitHandler={editLead}
-                                reportData={item}
+                                leadData={item}
                               />
                               <DeleteButton
                                 submitHandler={deleteLead}
-                                reportData={item}
+                                leadData={item}
                               />
                               <WithdrawLeadButton
                                 submitHandler={withdrawLead}

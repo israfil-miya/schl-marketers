@@ -131,8 +131,18 @@ const Table = () => {
     return;
   }
 
-  async function deleteReport(reportId: string, reqBy: string) {
+  async function deleteReport(
+    originalReportData: { [key: string]: any },
+    reportId: string,
+    reqBy: string,
+  ) {
     try {
+      // block delete action if the report is others and the user is not the one who created the report
+      if (originalReportData.marketer_name !== reqBy) {
+        toast.error('You are not allowed to delete this report');
+        return;
+      }
+
       let url: string = process.env.NEXT_PUBLIC_PORTAL_URL + '/api/approval';
       let options: {} = {
         method: 'POST',
@@ -171,6 +181,27 @@ const Table = () => {
     console.log('editReport', reportId, isRecall, editedData);
 
     try {
+      if (!editedData.followup_done && editedData.followup_date === '') {
+        toast.error(
+          'Followup date is required because followup is set as pending for this report',
+        );
+        setEditedData({
+          ...originalReportData,
+          updated_by: session?.user?.real_name || '',
+        });
+        return;
+      }
+
+      // block edit action if the report is others and the user is not the one who created the report
+      if (originalReportData.marketer_name !== session?.user.real_name) {
+        toast.error('You are not allowed to edit this report');
+        setEditedData({
+          ...originalReportData,
+          updated_by: session?.user?.real_name || '',
+        });
+        return;
+      }
+
       setIsLoading(true);
 
       const recallLimit = 30;
@@ -188,18 +219,6 @@ const Table = () => {
         daysPassedSinceLastCall > 15 ||
         session?.user.role === 'super' ||
         session?.user.role === 'admin';
-
-      if (!editedData.followup_done && editedData.followup_date === '') {
-        toast.error(
-          'Followup date is required because followup is set as pending for this report',
-        );
-        setEditedData({
-          ...originalReportData,
-          updated_by: session?.user?.real_name || '',
-        });
-        setIsLoading(false);
-        return;
-      }
 
       if (isRecall) {
         if (isRecallAllowed) {
@@ -481,7 +500,6 @@ const Table = () => {
                   <th>Email Address</th>
                   <th>Calling Status</th>
                   <th>LinkedIn</th>
-                  <th>Test</th>
                   <th>Prospected</th>
                   <th>Manage</th>
                 </tr>
@@ -550,7 +568,6 @@ const Table = () => {
                           'No link provided'
                         )}
                       </td>
-                      <td>{item.is_test ? 'Yes' : 'No'}</td>
                       <td>
                         {item.is_prospected
                           ? `Yes (${item.followup_done ? 'Done' : 'Pending'})`

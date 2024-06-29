@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
 interface PropsType {
-  reportData: { [key: string]: any };
+  leadData: { [key: string]: any };
   isLoading: boolean;
   submitHandler: (
-    originalReportData: { [key: string]: any },
+    originalLeadData: { [key: string]: any },
     editedData: { [key: string]: any },
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   ) => Promise<void>;
@@ -17,14 +17,14 @@ const EditButton: React.FC<PropsType> = (props) => {
   const [editedBy, setEditedBy] = useState<string>('');
 
   const [editedData, setEditedData] = useState<{ [key: string]: any }>({
-    ...props.reportData,
+    ...props.leadData,
     updated_by: session?.user?.real_name || '',
   });
 
   useEffect(() => {
     if (!isOpen) {
       setEditedData({
-        ...props.reportData,
+        ...props.leadData,
         updated_by: session?.user?.real_name || '',
       });
     }
@@ -66,7 +66,7 @@ const EditButton: React.FC<PropsType> = (props) => {
         disabled={props.isLoading}
         onClick={() => {
           setIsOpen(true);
-          setEditedBy(props.reportData.updated_by || '');
+          setEditedBy(props.leadData.updated_by || '');
         }}
         className="items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-2 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white p-2"
       >
@@ -440,7 +440,7 @@ const EditButton: React.FC<PropsType> = (props) => {
               <button
                 onClick={() => {
                   props.submitHandler(
-                    props.reportData,
+                    props.leadData,
                     editedData,
                     setEditedData,
                   );
