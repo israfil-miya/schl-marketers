@@ -326,7 +326,7 @@ const Table = () => {
           <select
             value={itemPerPage}
             onChange={(e) => setItemPerPage(parseInt(e.target.value))}
-            defaultValue={30}
+            // defaultValue={30}
             required
             className="appearance-none bg-gray-200 text-gray-700 border border-gray-200 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >

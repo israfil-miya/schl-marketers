@@ -18,7 +18,7 @@ const Topbar: React.FC = () => {
   return (
     <div className="w-full bg-white align-middle items-center border-b-2 p-3 max-lg:px-3 max-lg:py-2 flex flex-row justify-between">
       <Image
-        priority={false}
+        priority={true}
         src={'/images/logo-grey.png'}
         alt="logo"
         width={95}
