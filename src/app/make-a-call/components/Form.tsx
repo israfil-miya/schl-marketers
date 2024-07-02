@@ -372,7 +372,7 @@ const Form: React.FC<propsType> = (props) => {
             <span className="cursor-pointer has-tooltip">
               &#9432;
               <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
-                Separated by <span className='font-extrabold'>" / "</span>
+                Separated by <span className='font-extrabold'>&ldquo; / &rdquo;</span>
               </span>
             </span>
           </label>
