@@ -48,7 +48,7 @@ const Table = () => {
     toDate: '',
     test: false,
     generalSearchString: '',
-    show: 'all' as 'all' | 'mine' | 'others',
+    show: 'mine' as 'all' | 'mine' | 'others',
   });
 
   async function getAllClients() {
@@ -67,7 +67,7 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          show: 'all',
+          show: 'mine',
           regularClient: true,
         }),
       };

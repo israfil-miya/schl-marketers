@@ -53,7 +53,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
       toDate: '',
       test: false,
       generalSearchString: '',
-      show: 'all',
+      show: 'mine',
     });
   };
 

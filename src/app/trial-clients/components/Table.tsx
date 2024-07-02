@@ -52,7 +52,7 @@ const Table = () => {
     toDate: '',
     prospect: false,
     generalSearchString: '',
-    show: 'all' as 'all' | 'mine' | 'others',
+    show: 'mine' as 'all' | 'mine' | 'others',
   });
 
   async function getAllReports() {
@@ -71,7 +71,7 @@ const Table = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          show: 'all',
+          show: 'mine',
           test: true,
           regularClient: false,
         }),

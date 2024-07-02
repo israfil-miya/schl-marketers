@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import fetchData from '@/utility/fetchdata';
 import { useSearchParams } from 'next/navigation';
 import isValidUrl from '@/utility/validurlcheck';
+import isValidMail from '@/utility/validemailcheck';
 
 import { toast } from 'sonner';
 
@@ -82,6 +83,12 @@ const Form: React.FC<propsType> = (props) => {
 
     if (isValidUrl(reportData.designation)) {
       toast.error('Designation cannot be a URL');
+      return false;
+    }
+
+    // check if email is valid
+    if (reportData.email && !isValidMail(reportData.email)) {
+      toast.error('Invalid email address');
       return false;
     }
 
@@ -358,17 +365,23 @@ const Form: React.FC<propsType> = (props) => {
         </div>
         <div className="">
           <label
-            className="block uppercase tracking-wide text-gray-700 text-sm font-bold mb-2"
+            className="uppercase tracking-wide text-gray-700 text-sm font-bold flex gap-2 mb-2"
             htmlFor="grid-password"
           >
             Email address
+            <span className="cursor-pointer has-tooltip">
+              &#9432;
+              <span className="tooltip italic font-medium rounded-md text-xs shadow-lg p-1 px-2 bg-gray-100 ml-2">
+                Separated by <span className='font-extrabold'>" / "</span>
+              </span>
+            </span>
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="email"
             value={reportData.email}
             onChange={handleChange}
-            type="email"
+            type="text"
             placeholder="Contact person's/company's email"
           />
         </div>

@@ -8,7 +8,7 @@
   visibility: hidden;
 }
 
-.has-tooltip:hover:focus .tooltip {
+.has-tooltip:hover .tooltip {
   visibility: visible;
   z-index: 50;
 }

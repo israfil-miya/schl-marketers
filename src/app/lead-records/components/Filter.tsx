@@ -55,7 +55,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
       test: false,
       prospect: false,
       generalSearchString: '',
-      show: 'all',
+      show: 'mine',
     });
   };
 
