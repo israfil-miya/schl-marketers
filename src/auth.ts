@@ -16,7 +16,7 @@ async function getUser(
   password: string,
 ): Promise<User | null> {
   try {
-    const res = await fetch(BASE_URL + '/api/user?action=handleLogin', {
+    const res = await fetch(BASE_URL + '/api/user?action=handle-login', {
       method: 'GET',
       headers: { username: username, password: password },
     });
