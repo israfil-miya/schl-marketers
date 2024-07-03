@@ -17,7 +17,7 @@ const AccountButton: React.FC<PropsType> = (props) => {
       disabled={pathname === '/my-account'}
       type="button"
       className={cn(
-        `flex items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-4 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2`,
+        `flex cursor-pointer items-center gap-2 rounded-md bg-blue-600 hover:opacity-90 hover:ring-4 hover:ring-blue-600 transition duration-200 delay-300 hover:text-opacity-100 text-white px-3 py-2`,
         props.className,
       )}
     >

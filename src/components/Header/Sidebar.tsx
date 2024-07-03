@@ -166,10 +166,10 @@ const FilterButton: React.FC<PropsType> = (props) => {
           </Link>
           <hr />
           <Link
-            href="/account"
+            href="/my-account"
             className={cn(
               'p-4 flex items-center',
-              pathname == '/account'
+              pathname == '/my-account'
                 ? 'bg-primary text-white'
                 : 'hover:bg-gray-100',
             )}

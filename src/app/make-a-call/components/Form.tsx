@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import fetchData from '@/utility/fetchdata';
 import { useSearchParams } from 'next/navigation';
 import isValidUrl from '@/utility/validurlcheck';
@@ -14,7 +14,8 @@ interface propsType {
 const Form: React.FC<propsType> = (props) => {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const NewLeadQuery: boolean = searchParams.get('new-lead') == 'true';
+  const NewLeadQuery: {current: boolean} = useRef(searchParams.get('new-lead') == 'true');
+  console.log("Ref", NewLeadQuery.current)
   const [reportData, setReportData] = useState({
     callingDate: props.todayDate,
     followupDate: '',
@@ -34,6 +35,10 @@ const Form: React.FC<propsType> = (props) => {
     followupDone: false,
     newLead: false,
   });
+
+
+
+  console.log("Ref", NewLeadQuery.current, "State", reportData.newLead)
 
   const inputValidations = (reportData: any) => {
     // check if all required fields are filled
@@ -188,13 +193,13 @@ const Form: React.FC<propsType> = (props) => {
   };
 
   useEffect(() => {
-    if (NewLeadQuery) {
+    if (NewLeadQuery.current) {
       setReportData((prevData) => ({
         ...prevData,
         newLead: true,
       }));
     }
-  }, [NewLeadQuery]);
+  }, [NewLeadQuery.current]);
 
   return (
     <form onSubmit={handleAddNewReportFormSubmit}>
@@ -501,7 +506,7 @@ const Form: React.FC<propsType> = (props) => {
         <div className="flex gap-2 items-center">
           <input
             name="newLead"
-            checked={reportData.newLead || NewLeadQuery}
+            checked={reportData.newLead || NewLeadQuery.current}
             onChange={handleChange}
             id="new-lead-checkbox"
             type="checkbox"
