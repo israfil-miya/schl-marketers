@@ -5,6 +5,7 @@ import Overview from './Overview';
 import { useSession } from 'next-auth/react';
 import fetchData from '@/utility/fetchdata';
 import { toast } from 'sonner';
+import SalaryStructure from './SalaryStructure';
 
 const Profile: React.FC = () => {
   const { data: session } = useSession();
@@ -18,7 +19,7 @@ const Profile: React.FC = () => {
 
   async function getEmployeeInfo() {
     try {
-      setIsLoading({ ...isLoading, overview: true });
+      setIsLoading({ ...isLoading, overview: true, salaryStructure: true });
 
       let url: string = process.env.NEXT_PUBLIC_PORTAL_URL + '/api/employee';
       let options: {} = {
@@ -41,7 +42,7 @@ const Profile: React.FC = () => {
       console.error(error);
       toast.error('An error occurred while retrieving employee data');
     } finally {
-      setIsLoading({ ...isLoading, overview: false });
+      setIsLoading({ ...isLoading, overview: false, salaryStructure: false });
     }
   }
 
@@ -50,8 +51,12 @@ const Profile: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <Overview isLoading={isLoading.overview} employeeInfo={employeeInfo} />
+      <SalaryStructure
+        isLoading={isLoading.salaryStructure}
+        employeeInfo={employeeInfo}
+      />
     </div>
   );
 };
