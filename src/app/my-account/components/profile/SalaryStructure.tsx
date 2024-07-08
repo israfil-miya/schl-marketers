@@ -12,8 +12,6 @@ interface OverviewProps {
 }
 
 const Overview: React.FC<OverviewProps> = (props) => {
-  let color = useRef(getRandomColor());
-
   let { employeeInfo, isLoading } = props;
 
   console.log(props.employeeInfo, props.isLoading);
@@ -27,16 +25,46 @@ const Overview: React.FC<OverviewProps> = (props) => {
       ) : null}
       {!isLoading && employeeInfo?._id && (
         <div className="px-10 py-6 bg-gray-100 border-2">
-          <h1 className="text-center underline underline-offset-4 text-2xl font-semibold">
+          <h1 className="text-center underline underline-offset-4 text-2xl font-semibold mb-2">
             Salary Structure
           </h1>
 
-          <div>
-            {/* <div>
-              <h1>Basic</h1>
-              <div className="border-2 border-dashed border-gray-600"></div>
-              <h1>{'10,000 BDT'}</h1>
-            </div> */}
+          <div className="flex flex-col">
+            <div className="flex flex-row items-center">
+              <p className="text-nowrap pr-4 font-semibold">Basic</p>
+              <div className="border-[1px] border-dashed border-gray-300 w-full h-0 "></div>
+              <p className="text-nowrap pl-4  underline">{'0 BDT'}</p>
+            </div>
+            <div className="flex flex-row items-center">
+              <p className="text-nowrap pr-4 font-semibold">House Rent</p>
+              <div className="border-[1px] border-dashed border-gray-300 w-full h-0 "></div>
+              <p className="text-nowrap pl-4 font-extralight  underline">
+                {'0 BDT'}
+              </p>
+            </div>
+            <div className="flex flex-row items-center">
+              <p className="text-nowrap pr-4 font-semibold">Conv. Allowance</p>
+              <div className="border-[1px] border-dashed border-gray-300 w-full h-0 "></div>
+              <p className="text-nowrap pl-4  underline">{'0 BDT'}</p>
+            </div>
+            <div className="flex flex-row items-center justify-end">
+              <p className="text-nowrap pr-1 font-semibold">Gross: </p>
+              <p className="text-nowrap underline">
+                {'0 BDT'}
+                <span className="lowercase">{'/month'}</span>
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-between mt-2">
+            <p className="text-base">
+              Over Time (OT):{' '}
+              <span className="underline">
+                0 BDT<span className="lowercase">{'/hour'}</span>
+              </span>
+            </p>
+            <p className="text-base">
+              Provident Fund (PF): <span className="underline">{'0 BDT'}</span>
+            </p>
           </div>
         </div>
       )}
