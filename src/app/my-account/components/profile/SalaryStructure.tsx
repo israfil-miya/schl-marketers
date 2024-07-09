@@ -1,10 +1,11 @@
 'use client';
-import React, { useRef } from 'react';
-import Image from 'next/image';
-import getRandomColor from '@/utility/randomcolorgenerator';
-import Link from 'next/link';
-import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
-import moment from 'moment-timezone';
+import React, { useState, useEffect } from 'react';
+import HiddenText from '@/components/HiddenText';
+import {
+  calculateSalaryComponents,
+  getPFMoneyAmount,
+  SalaryStructureType,
+} from '@/utility/accountmatricshelpers';
 
 interface OverviewProps {
   employeeInfo: any;
@@ -14,7 +15,26 @@ interface OverviewProps {
 const Overview: React.FC<OverviewProps> = (props) => {
   let { employeeInfo, isLoading } = props;
 
-  console.log(props.employeeInfo, props.isLoading);
+  const [salaryStructure, setSalaryStructure] = useState<SalaryStructureType>({
+    base: 0,
+    houseRent: 0,
+    convAllowance: 0,
+    grossSalary: 0,
+  });
+
+  const [pfAmount, setPfAmount] = useState<number>(0);
+
+  useEffect(() => {
+    if (!isLoading && employeeInfo?._id) {
+      setSalaryStructure(calculateSalaryComponents(employeeInfo.gross_salary));
+    }
+  }, [employeeInfo.gross_salary]);
+
+  useEffect(() => {
+    if (!isLoading && employeeInfo?._id) {
+      setPfAmount(getPFMoneyAmount(salaryStructure, employeeInfo));
+    }
+  }, [salaryStructure.base]);
 
   return (
     <>
@@ -33,25 +53,40 @@ const Overview: React.FC<OverviewProps> = (props) => {
             <div className="flex flex-row items-center">
               <p className="text-nowrap pr-4 font-semibold">Basic</p>
               <div className="border-[1px] border-dashed border-gray-300 w-full h-0 "></div>
-              <p className="text-nowrap pl-4  underline">{'0 BDT'}</p>
+              <p className="text-nowrap pl-4 underline">
+                <HiddenText>
+                  {salaryStructure.base?.toLocaleString('en-US')} BDT
+                </HiddenText>
+              </p>
             </div>
             <div className="flex flex-row items-center">
               <p className="text-nowrap pr-4 font-semibold">House Rent</p>
               <div className="border-[1px] border-dashed border-gray-300 w-full h-0 "></div>
-              <p className="text-nowrap pl-4 font-extralight  underline">
-                {'0 BDT'}
+              <p className="text-nowrap pl-4 underline">
+                <HiddenText>
+                  {salaryStructure.houseRent?.toLocaleString('en-US')} BDT
+                </HiddenText>
               </p>
             </div>
             <div className="flex flex-row items-center">
               <p className="text-nowrap pr-4 font-semibold">Conv. Allowance</p>
               <div className="border-[1px] border-dashed border-gray-300 w-full h-0 "></div>
-              <p className="text-nowrap pl-4  underline">{'0 BDT'}</p>
+              <p className="text-nowrap pl-4 underline">
+                <HiddenText>
+                  {salaryStructure.convAllowance?.toLocaleString('en-US')} BDT
+                </HiddenText>
+              </p>
             </div>
             <div className="flex flex-row items-center justify-end">
               <p className="text-nowrap pr-1 font-semibold">Gross: </p>
               <p className="text-nowrap underline">
-                {'0 BDT'}
-                <span className="lowercase">{'/month'}</span>
+                <HiddenText>
+                  {salaryStructure.grossSalary?.toLocaleString('en-US')}
+                  <span>
+                    {' '}
+                    BDT<span className="lowercase">{'/month'}</span>
+                  </span>
+                </HiddenText>
               </p>
             </div>
           </div>
@@ -59,11 +94,24 @@ const Overview: React.FC<OverviewProps> = (props) => {
             <p className="text-base">
               Over Time (OT):{' '}
               <span className="underline">
-                0 BDT<span className="lowercase">{'/hour'}</span>
+                {Math.round(salaryStructure.base / 30 / 8)?.toLocaleString(
+                  'en-US',
+                )}
+                <span>
+                  {' '}
+                  BDT<span className="lowercase">{'/hour'}</span>
+                </span>
               </span>
             </p>
             <p className="text-base">
-              Provident Fund (PF): <span className="underline">{'0 BDT'}</span>
+              Provident Fund (PF):{' '}
+              <span className="underline">
+                {employeeInfo?.pf_start_date
+                  ? employeeInfo.provident_fund
+                    ? pfAmount.toLocaleString('en-US') + ' BDT'
+                    : 'N/A'
+                  : 'N/A'}
+              </span>
             </p>
           </div>
         </div>

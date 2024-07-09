@@ -38,9 +38,12 @@ const Form: React.FC<propsType> = (props) => {
     newLead: false,
   });
 
-  console.log('Ref', NewLeadQuery.current, 'State', reportData.newLead);
-
   const inputValidations = (reportData: any) => {
+    const containsUrl = (text: string) => {
+      const words = text.split(' ');
+      return words.some((word) => isValidUrl(word));
+    };
+
     // check if all required fields are filled
     if (
       reportData.country === '' ||
@@ -66,27 +69,27 @@ const Form: React.FC<propsType> = (props) => {
     }
 
     // check country, company, category, contact person, designation are not a link
-    if (isValidUrl(reportData.country)) {
+    if (containsUrl(reportData.country)) {
       toast.error('Country cannot be a URL');
       return false;
     }
 
-    if (isValidUrl(reportData.company)) {
+    if (containsUrl(reportData.company)) {
       toast.error('Company name cannot be a URL');
       return false;
     }
 
-    if (isValidUrl(reportData.category)) {
+    if (containsUrl(reportData.category)) {
       toast.error('Category cannot be a URL');
       return false;
     }
 
-    if (isValidUrl(reportData.contactPerson)) {
+    if (containsUrl(reportData.contactPerson)) {
       toast.error('Contact person name cannot be a URL');
       return false;
     }
 
-    if (isValidUrl(reportData.designation)) {
+    if (containsUrl(reportData.designation)) {
       toast.error('Designation cannot be a URL');
       return false;
     }
