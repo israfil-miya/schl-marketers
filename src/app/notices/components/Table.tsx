@@ -45,7 +45,7 @@ const Table = () => {
 
   async function getAllNotices() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/notice?action=get-all-notices';
@@ -78,7 +78,7 @@ const Table = () => {
 
   async function getAllNoticesFiltered() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/notice?action=get-all-notices';

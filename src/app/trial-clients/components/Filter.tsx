@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import cn from '@/utility/cn';
 
 interface PropsType {
@@ -23,6 +23,7 @@ interface PropsType {
 const FilterButton: React.FC<PropsType> = (props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { filters, setFilters } = props;
+  const popupRef = useRef<HTMLElement>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -57,6 +58,16 @@ const FilterButton: React.FC<PropsType> = (props) => {
     });
   };
 
+  const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(e.target as Node) &&
+      !popupRef.current.querySelector('input:focus, textarea:focus')
+    ) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <>
       <button
@@ -80,10 +91,11 @@ const FilterButton: React.FC<PropsType> = (props) => {
       </button>
 
       <section
-        onClick={() => setIsOpen(false)}
+        onClick={handleClickOutside}
         className={`fixed z-50 inset-0 flex justify-center items-center transition-colors ${isOpen ? 'visible bg-black/20 disable-page-scroll' : 'invisible'} `}
       >
         <article
+          ref={popupRef}
           onClick={(e) => e.stopPropagation()}
           className={`${isOpen ? 'scale-100 opacity-100' : 'scale-125 opacity-0'} bg-white rounded-lg lg:w-[35vw] md:w-[70vw] sm:w-[80vw] shadow relative`}
         >

@@ -56,7 +56,7 @@ const Table = () => {
 
   async function getAllReports() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=get-all-reports';
@@ -94,7 +94,7 @@ const Table = () => {
 
   async function getAllReportsFiltered() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=get-all-reports';
@@ -173,7 +173,7 @@ const Table = () => {
     console.log('editReport', reportId, isRecall, editedData);
 
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       const recallLimit = 30;
 

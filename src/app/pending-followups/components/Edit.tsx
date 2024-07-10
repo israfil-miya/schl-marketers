@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { useSession } from 'next-auth/react';
 
@@ -22,6 +22,7 @@ const EditButton: React.FC<PropsType> = (props) => {
   const { data: session } = useSession();
   const [editedBy, setEditedBy] = useState<string>('');
   const [isRecall, setIsRecall] = useState<boolean>(false);
+  const popupRef = useRef<HTMLElement>(null);
 
   const [editedData, setEditedData] = useState<{ [key: string]: any }>({
     ...props.reportData,
@@ -61,6 +62,16 @@ const EditButton: React.FC<PropsType> = (props) => {
     }
   };
 
+  const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(e.target as Node) &&
+      !popupRef.current.querySelector('input:focus, textarea:focus')
+    ) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <>
       <button
@@ -88,10 +99,11 @@ const EditButton: React.FC<PropsType> = (props) => {
       </button>
 
       <section
-        onClick={() => setIsOpen(false)}
+        onClick={handleClickOutside}
         className={`fixed z-50 inset-0 flex justify-center items-center transition-colors ${isOpen ? 'visible bg-black/20 disable-page-scroll' : 'invisible'} `}
       >
         <article
+          ref={popupRef}
           onClick={(e) => e.stopPropagation()}
           className={`${isOpen ? 'scale-100 opacity-100' : 'scale-125 opacity-0'} bg-white rounded-lg shadow relative md:w-[60vw] lg:w-[40vw]  text-wrap`}
         >

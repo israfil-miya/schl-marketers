@@ -57,7 +57,7 @@ const Table = () => {
 
   async function getAllLeads() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=get-all-reports';
@@ -93,7 +93,7 @@ const Table = () => {
 
   async function getAllLeadsFiltered() {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
 
       let url: string =
         process.env.NEXT_PUBLIC_BASE_URL + '/api/report?action=get-all-reports';
@@ -195,7 +195,7 @@ const Table = () => {
         return;
       }
 
-      setIsLoading(true);
+      // setIsLoading(true);
 
       const editReportUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/report?action=edit-report`;
       const editOptions = {
