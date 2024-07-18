@@ -26,14 +26,14 @@ const EditButton: React.FC<PropsType> = (props) => {
 
   const [editedData, setEditedData] = useState<{ [key: string]: any }>({
     ...props.reportData,
-    updated_by: session?.user?.real_name || '',
+    updated_by: session?.user.real_name || '',
   });
 
   useEffect(() => {
     if (!isOpen) {
       setEditedData({
         ...props.reportData,
-        updated_by: session?.user?.real_name || '',
+        updated_by: session?.user.real_name || '',
       });
     }
   }, [isOpen]);

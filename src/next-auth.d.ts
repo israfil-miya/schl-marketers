@@ -8,6 +8,7 @@ declare module 'next-auth' {
       db_id: string;
       real_name: string;
       cred_name: string;
+      provided_name: string;
       role: string;
     } & DefaultSession['user'];
   }
@@ -16,6 +17,7 @@ declare module 'next-auth' {
     db_id: string;
     real_name: string;
     cred_name: string;
+    provided_name: string;
     role: string;
   }
 }
@@ -26,6 +28,7 @@ declare module 'next-auth/jwt' {
     db_id: string;
     real_name: string;
     cred_name: string;
+    provided_name: string;
     role: string;
   }
 }

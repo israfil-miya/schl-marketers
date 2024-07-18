@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 
 // Interface for User document
 interface User {
-  name: string;
   real_name: string;
+  provided_name: string;
+  name: string;
   password: string;
   role: string;
 }
@@ -16,6 +17,7 @@ const UserSchema = new mongoose.Schema<User>({
     unique: true,
   },
   real_name: { type: String, required: [true, 'Real name is not given'] },
+  provided_name: { type: String, required: [true, 'Fake name is not given'] },
   password: { type: String, required: [true, 'Password is not given'] },
   role: { type: String, required: [true, 'Role is not given'] },
 });

@@ -60,7 +60,7 @@ const DailyStatusTable = () => {
         method: 'POST',
         body: JSON.stringify(filters),
         headers: {
-          name: session?.user.real_name,
+          name: session?.user.provided_name,
           'Content-Type': 'application/json',
         },
       };

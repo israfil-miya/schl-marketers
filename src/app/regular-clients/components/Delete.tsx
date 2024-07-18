@@ -83,7 +83,7 @@ const DeleteButton: React.FC<PropsType> = (props) => {
                 props.submitHandler(
                   props.clientData,
                   props.clientData?._id,
-                  session?.user?.real_name || '',
+                  session?.user.real_name || '',
                 );
                 setIsOpen(false);
               }}

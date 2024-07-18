@@ -103,16 +103,29 @@ const Overview: React.FC<OverviewProps> = (props) => {
                 </span>
               </span>
             </p>
-            <p className="text-base">
+            <div className="text-base">
               Provident Fund (PF):{' '}
-              <span className="underline">
-                {employeeInfo?.pf_start_date
-                  ? employeeInfo.provident_fund
-                    ? pfAmount.toLocaleString('en-US') + ' BDT'
-                    : 'N/A'
-                  : 'N/A'}
-              </span>
-            </p>
+              <p className="ml-12">
+                Your's Part:
+                <span className="underline">
+                  {employeeInfo?.pf_start_date
+                    ? employeeInfo.provident_fund
+                      ? pfAmount.toLocaleString('en-US') + ' BDT'
+                      : 'N/A'
+                    : 'N/A'}
+                </span>
+              </p>
+              <p className="ml-12">
+                Company's Part:
+                <span className="underline">
+                  {employeeInfo?.pf_start_date
+                    ? employeeInfo.provident_fund
+                      ? pfAmount.toLocaleString('en-US') + ' BDT'
+                      : 'N/A'
+                    : 'N/A'}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       )}

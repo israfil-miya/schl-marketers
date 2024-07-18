@@ -8,6 +8,7 @@ interface User {
   db_id: string;
   real_name: string;
   cred_name: string;
+  provided_name: string;
   role: string;
 }
 
@@ -31,8 +32,11 @@ async function getUser(
       db_id: userData._id,
       real_name: userData.real_name,
       cred_name: userData.name,
+      provided_name: userData.provided_name,
       role: userData.role,
     };
+
+    console.log(user);
 
     return user;
   } catch (e) {

@@ -180,17 +180,17 @@ const Table = () => {
         );
         setEditedData({
           ...originalLeadData,
-          updated_by: session?.user?.real_name || '',
+          updated_by: session?.user.real_name || '',
         });
         return;
       }
 
       // block edit action if the lead is others and the user is not the one who created the lead
-      if (originalLeadData.marketer_name !== session?.user.real_name) {
+      if (originalLeadData.marketer_name !== session?.user.provided_name) {
         toast.error('You are not allowed to edit this lead');
         setEditedData({
           ...originalLeadData,
-          updated_by: session?.user?.real_name || '',
+          updated_by: session?.user.real_name || '',
         });
         return;
       }
@@ -222,7 +222,7 @@ const Table = () => {
     } finally {
       setEditedData({
         ...originalLeadData,
-        updated_by: session?.user?.real_name || '',
+        updated_by: session?.user.real_name || '',
       });
       setIsLoading(false);
     }

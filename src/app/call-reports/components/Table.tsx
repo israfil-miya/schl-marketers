@@ -70,7 +70,7 @@ const Table = () => {
           page,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ marketerName: session?.user?.real_name }),
+        body: JSON.stringify({ marketerName: session?.user.provided_name }),
       };
 
       let response = await fetchData(url, options);
@@ -105,7 +105,7 @@ const Table = () => {
         },
         body: JSON.stringify({
           ...filters,
-          marketerName: session?.user?.real_name,
+          marketerName: session?.user.provided_name,
         }),
       };
 
@@ -190,7 +190,7 @@ const Table = () => {
         );
         setEditedData({
           ...originalReportData,
-          updated_by: session?.user?.real_name || '',
+          updated_by: session?.user.real_name || '',
         });
         setIsLoading(false);
         return;
@@ -203,7 +203,7 @@ const Table = () => {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              name: session?.user.real_name,
+              name: session?.user.provided_name,
             },
           });
 
@@ -322,7 +322,7 @@ const Table = () => {
     } finally {
       setEditedData({
         ...originalReportData,
-        updated_by: session?.user?.real_name || '',
+        updated_by: session?.user.real_name || '',
       });
       setIsLoading(false);
     }

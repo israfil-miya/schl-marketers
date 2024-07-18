@@ -30,7 +30,7 @@ const Graphs = () => {
       let options: {} = {
         method: 'GET',
         headers: {
-          name: session?.user?.real_name,
+          name: session?.user.provided_name,
           'Content-Type': 'application/json',
         },
       };
@@ -63,7 +63,7 @@ const Graphs = () => {
       let options: {} = {
         method: 'GET',
         headers: {
-          name: session?.user?.real_name,
+          name: session?.user.provided_name,
           'Content-Type': 'application/json',
         },
       };
@@ -99,7 +99,7 @@ const Graphs = () => {
       let options: {} = {
         method: 'GET',
         headers: {
-          name: session?.user?.real_name,
+          name: session?.user.provided_name,
           'Content-Type': 'application/json',
         },
       };

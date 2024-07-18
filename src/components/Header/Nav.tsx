@@ -13,7 +13,7 @@ import { useSession } from 'next-auth/react';
 const Nav: React.FC<PropsType> = (props) => {
   const { data: session } = useSession();
 
-  let { msg = 'Welcome, ' + session?.user.real_name + '!' } = props;
+  let { msg = 'Welcome, ' + session?.user.provided_name + '!' } = props;
   let pathname = usePathname();
 
   console.log(pathname);

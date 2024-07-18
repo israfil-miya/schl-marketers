@@ -169,7 +169,7 @@ const Table = () => {
     setEditedData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>,
   ) {
     try {
-      if (originalClientData.marketer_name !== session?.user?.real_name) {
+      if (originalClientData.marketer_name !== session?.user.provided_name) {
         toast.error("You are not allowed to edit this client's data");
         return;
       }
@@ -180,7 +180,7 @@ const Table = () => {
         );
         setEditedData({
           ...originalClientData,
-          updated_by: session?.user?.real_name || '',
+          updated_by: session?.user.real_name || '',
         });
         return;
       }
@@ -212,7 +212,7 @@ const Table = () => {
     } finally {
       setEditedData({
         ...originalClientData,
-        updated_by: session?.user?.real_name || '',
+        updated_by: session?.user.real_name || '',
       });
       setIsLoading(false);
     }

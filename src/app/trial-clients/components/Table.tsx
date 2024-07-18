@@ -187,17 +187,17 @@ const Table = () => {
         );
         setEditedData({
           ...originalReportData,
-          updated_by: session?.user?.real_name || '',
+          updated_by: session?.user.real_name || '',
         });
         return;
       }
 
       // block edit action if the report is others and the user is not the one who created the report
-      if (originalReportData.marketer_name !== session?.user.real_name) {
+      if (originalReportData.marketer_name !== session?.user.provided_name) {
         toast.error('You are not allowed to edit this report');
         setEditedData({
           ...originalReportData,
-          updated_by: session?.user?.real_name || '',
+          updated_by: session?.user.real_name || '',
         });
         return;
       }
@@ -227,7 +227,7 @@ const Table = () => {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              name: session?.user.real_name,
+              name: session?.user.provided_name,
             },
           });
 
@@ -346,7 +346,7 @@ const Table = () => {
     } finally {
       setEditedData({
         ...originalReportData,
-        updated_by: session?.user?.real_name || '',
+        updated_by: session?.user.real_name || '',
       });
       setIsLoading(false);
     }

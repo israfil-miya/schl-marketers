@@ -141,7 +141,7 @@ async function handleAddNewReport(req: Request): Promise<{
 
     let data = {
       marketer_id: session?.user.db_id,
-      marketer_name: session?.user.real_name,
+      marketer_name: session?.user.provided_name,
       calling_date: form_data.callingDate,
       followup_date: form_data.followupDate,
       country: form_data.country,
@@ -211,7 +211,7 @@ async function handleGetAllReports(req: Request): Promise<{
     const isFilter: boolean = headers().get('filtered') === 'true';
     const paginated: boolean = headers().get('paginated') === 'true';
     const session = await auth();
-    const marketerNameFromSession: string = session?.user.real_name || '';
+    const marketerNameFromSession: string = session?.user.provided_name || '';
 
     const filters = await req.json();
 

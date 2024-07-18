@@ -21,9 +21,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* <head>
-        <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.5/dist/flowbite.min.css" />
-      </head> */}
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
@@ -34,7 +31,6 @@ export default function RootLayout({
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <main>{children}</main>
         <Toaster pauseWhenPageIsHidden richColors position="top-right" />
-        {/* <script src="https://unpkg.com/flowbite@2.3.0/dist/flowbite.js"></script> */}
       </body>
     </html>
   );
