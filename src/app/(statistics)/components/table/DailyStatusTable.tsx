@@ -106,7 +106,7 @@ const DailyStatusTable = () => {
       <div className="table-responsive text-center text-nowrap text-lg px-2 mt-1">
         <table className="table table-bordered border">
           <thead>
-            <tr className="bg-gray-200">
+            <tr className="bg-gray-50">
               <th>Calls</th>
               <th>Tests</th>
               <th>Prospects</th>

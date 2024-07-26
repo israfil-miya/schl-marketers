@@ -7,8 +7,8 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'i2.wp.com',
-        pathname: '**',
+        hostname: 'gravatar.com',
+        pathname: '/avatar/*',
       },
     ],
   },

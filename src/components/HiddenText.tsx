@@ -1,8 +1,12 @@
 'use client';
 import React, { ReactNode, useState } from 'react';
 
-const HiddenText: React.FC<{ children: ReactNode }> = ({ children }) => {
+const HiddenText: React.FC<{ children: ReactNode; className: string }> = (
+  props,
+) => {
   const [isVisible, setIsVisible] = useState(false);
+
+  const { children } = props;
 
   const toggleVisibility = () => {
     setIsVisible((prevState) => !prevState);
@@ -21,6 +25,7 @@ const HiddenText: React.FC<{ children: ReactNode }> = ({ children }) => {
         ) : (
           <span>
             <svg
+              className={props.className}
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"

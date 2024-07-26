@@ -7,7 +7,11 @@ import fetchData from '@/utility/fetchdata';
 import { toast } from 'sonner';
 import SalaryStructure from './SalaryStructure';
 
-const Profile: React.FC = () => {
+interface ProfilePropsTypes {
+  avatarURI: string;
+}
+
+const Profile: React.FC<ProfilePropsTypes> = (props) => {
   const { data: session } = useSession();
   const [employeeInfo, setEmployeeInfo] = React.useState<{
     [key: string]: string | number;
@@ -51,8 +55,12 @@ const Profile: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
-      <Overview isLoading={isLoading.overview} employeeInfo={employeeInfo} />
+    <div className="flex flex-col gap-4 font-mono">
+      <Overview
+        isLoading={isLoading.overview}
+        employeeInfo={employeeInfo}
+        avatarURI={props.avatarURI}
+      />
       <SalaryStructure
         isLoading={isLoading.salaryStructure}
         employeeInfo={employeeInfo}

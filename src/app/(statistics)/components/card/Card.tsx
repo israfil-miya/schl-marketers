@@ -10,7 +10,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ title, description, onClick, icon }) => {
   return (
     <div
-      className="flex-1 cursor-pointer p-4 bg-opacity-25 bg-gray-300 border shadow-md flex flex-col items-start"
+      className="flex-1 cursor-pointer p-4 bg-opacity-25 bg-gray-50 border shadow-md flex flex-col items-start"
       onClick={onClick}
     >
       <div className="flex items-center mb-4">
