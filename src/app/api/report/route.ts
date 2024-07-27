@@ -772,8 +772,33 @@ async function handleGetReportsStatus(req: Request): Promise<{
   }
 }
 
+async function handleGetFollowupCountForToday(req: Request): Promise<{
+  data: string | Record<string, number> | number;
+  status: number;
+}> {
+  try {
+    const marketerName: string = (headers().get('name') as string) || '';
+    console.log(marketerName);
+
+    const followupCount = await Report.countDocuments({
+      marketer_name: marketerName,
+      followup_date: getTodayDate(),
+      followup_done: false,
+      is_lead: false,
+    });
+
+    return {
+      data: followupCount,
+      status: 200,
+    };
+  } catch (e) {
+    console.error(e);
+    return { data: 'An error occurred', status: 500 };
+  }
+}
+
 export async function POST(req: Request) {
-  let res: { data: string | Object; status: number };
+  let res: { data: string | Object | number; status: number };
 
   switch (getQuery(req).action) {
     case 'add-new-report':
@@ -800,7 +825,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  let res: { data: string | Object; status: number };
+  let res: { data: string | Object | number; status: number };
 
   switch (getQuery(req).action) {
     case 'get-recall-count':
@@ -814,6 +839,9 @@ export async function GET(req: Request) {
       return NextResponse.json(res.data, { status: res.status });
     case 'get-test-orders-trend':
       res = await handleGetTestOrdersTrend(req);
+      return NextResponse.json(res.data, { status: res.status });
+    case 'get-followup-count-for-today':
+      res = await handleGetFollowupCountForToday(req);
       return NextResponse.json(res.data, { status: res.status });
     default:
       return NextResponse.json({ response: 'OK' }, { status: 200 });

@@ -39,6 +39,7 @@ const Table = () => {
   const [pageCount, setPageCount] = useState<number>(0);
   const [itemPerPage, setItemPerPage] = useState<number>(30);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [followupCountForToday, setFollowupCountForToday] = useState<number>(0);
 
   const prevPageCount = useRef<number>(0);
   const prevPage = useRef<number>(1);
@@ -370,8 +371,35 @@ const Table = () => {
     }
   }
 
+  async function getFollowupCountForToday() {
+    try {
+      let url: string =
+        process.env.NEXT_PUBLIC_BASE_URL +
+        '/api/report?action=get-followup-count-for-today';
+      let options: {} = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          name: session?.user.provided_name,
+        },
+      };
+
+      let response = await fetchData(url, options);
+
+      if (response.ok) {
+        setFollowupCountForToday(response.data);
+      } else {
+        toast.error(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('An error occurred while retrieving followup count data');
+    }
+  }
+
   useEffect(() => {
     getAllReports();
+    getFollowupCountForToday();
   }, []);
 
   function handlePrevious() {
@@ -421,7 +449,14 @@ const Table = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center sm:flex-row sm:justify-end mb-4 gap-2">
+      <div className="flex flex-col sm:items-center sm:flex-row justify-between mb-4 gap-2">
+        <p className="text-lg text-center bg-gray-200 w-full sm:w-fit border px-3.5 py-1 rounded-md">
+          You have
+          <span className="font-mono px-1.5 font-semibold">
+            {followupCountForToday}
+          </span>
+          followups to do today!
+        </p>
         <div className="items-center flex gap-2">
           <div className="inline-flex rounded-md" role="group">
             <button

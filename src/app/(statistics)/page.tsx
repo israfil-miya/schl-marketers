@@ -5,6 +5,7 @@ import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth';
 import Cards from './components/card/Cards';
 import DailyStatusTable from './components/table/DailyStatusTable';
+import Link from 'next/link';
 
 const Statistics = async () => {
   const session = await auth();
