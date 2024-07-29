@@ -353,20 +353,20 @@ const Table = () => {
               <thead className="table-dark">
                 <tr>
                   <th>#</th>
-                  <th>Calling Date</th>
-                  <th>Followup Date</th>
+                  {/* <th>Calling Date</th>
+                  <th>Followup Date</th> */}
                   <th>Onboard Date</th>
                   <th>Country</th>
-                  <th>Website</th>
-                  <th>Category</th>
+                  {/* <th>Website</th>
+                  <th>Category</th> */}
                   <th>Company Name</th>
                   <th>Contact Person</th>
-                  <th>Designation</th>
-                  <th>Contact Number</th>
-                  <th>Email Address</th>
+                  {/* <th>Designation</th> */}
+                  {/* <th>Contact Number</th> */}
+                  {/* <th>Email Address</th> */}
                   <th>Calling Status</th>
-                  <th>LinkedIn</th>
-                  <th>Test</th>
+                  {/* <th>LinkedIn</th>
+                  <th>Test</th> */}
                   <th>Manage</th>
                 </tr>
               </thead>
@@ -375,21 +375,21 @@ const Table = () => {
                   return (
                     <tr key={item._id}>
                       <td>{index + 1 + itemPerPage * (page - 1)}</td>
-                      <td>
+                      {/* <td>
                         {item.calling_date &&
                           convertToDDMMYYYY(item.calling_date)}
                       </td>
                       <td>
                         {item.followup_date &&
                           convertToDDMMYYYY(item.followup_date)}
-                      </td>
+                      </td> */}
                       <td>
                         {item.onboard_date &&
                           convertToDDMMYYYY(item.onboard_date)}
                       </td>
 
                       <td>{item.country}</td>
-                      <td>
+                      {/* <td>
                         {item.website.length ? (
                           <Linkify
                             coverText="Click here to visit"
@@ -399,14 +399,14 @@ const Table = () => {
                           'No link provided'
                         )}
                       </td>
-                      <td>{item.category}</td>
+                      <td>{item.category}</td> */}
                       <td className="text-wrap">{item.company_name}</td>
                       <td className="text-wrap">{item.contact_person}</td>
-                      <td>{item.designation}</td>
+                      {/* <td>{item.designation}</td>
                       <td className="text-wrap">{item.contact_number}</td>
-                      <td className="text-wrap">{item.email_address}</td>
+                      <td className="text-wrap">{item.email_address}</td> */}
                       <CallingStatusTd data={item.calling_status} />
-                      <td>
+                      {/* <td>
                         {item.linkedin.length ? (
                           <Linkify
                             coverText="Click here to visit"
@@ -418,7 +418,7 @@ const Table = () => {
                       </td>
                       <td>
                         {item.test_given_date_history?.length ? 'Yes' : 'No'}
-                      </td>
+                      </td> */}
                       <td
                         className="text-center"
                         style={{ verticalAlign: 'middle' }}
