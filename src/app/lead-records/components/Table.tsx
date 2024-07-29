@@ -234,6 +234,8 @@ const Table = () => {
     reqBy: string,
   ) {
     try {
+      console.log(originalLeadData.marketer_name, reqBy);
+
       // block withdraw action if the lead is others and the user is not the one who created the lead
       if (originalLeadData.marketer_name !== reqBy) {
         toast.error('You are not allowed to withdraw this lead');

@@ -85,7 +85,7 @@ const WithdrawLeadButton: React.FC<PropsType> = (props) => {
                 props.submitHandler(
                   props.leadData,
                   props.leadData?._id,
-                  session?.user.real_name || '',
+                  session?.user.provided_name || '',
                 );
                 setIsOpen(false);
               }}
