@@ -782,7 +782,11 @@ async function handleGetFollowupCountForToday(req: Request): Promise<{
 
     const followupCount = await Report.countDocuments({
       marketer_name: marketerName,
-      followup_date: getTodayDate(),
+      followup_date: {
+        $lte: getTodayDate(),
+        $ne: '',
+        $exists: true,
+      },
       followup_done: false,
       is_lead: false,
     });

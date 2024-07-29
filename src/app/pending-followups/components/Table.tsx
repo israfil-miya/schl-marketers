@@ -450,7 +450,7 @@ const Table = () => {
   return (
     <>
       <div className="flex flex-col sm:items-center sm:flex-row justify-between mb-4 gap-2">
-        <p className="text-lg text-center bg-gray-200 w-full sm:w-fit border px-3.5 py-1 rounded-md">
+        <p className="text-xl text-center bg-gray-100 w-full sm:w-fit border-2 px-3.5 py-2 rounded-md">
           You have
           <span className="font-mono px-1.5 font-semibold">
             {followupCountForToday}
