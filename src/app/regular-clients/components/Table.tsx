@@ -363,8 +363,7 @@ const Table = () => {
                   <th>Contact Person</th>
                   {/* <th>Designation</th> */}
                   {/* <th>Contact Number</th> */}
-                  {/* <th>Email Address</th> */}
-                  <th>Calling Status</th>
+                  <th>Email Address</th>
                   {/* <th>LinkedIn</th>
                   <th>Test</th> */}
                   <th>Manage</th>
@@ -404,8 +403,8 @@ const Table = () => {
                       <td className="text-wrap">{item.contact_person}</td>
                       {/* <td>{item.designation}</td>
                       <td className="text-wrap">{item.contact_number}</td>
-                      <td className="text-wrap">{item.email_address}</td> */}
-                      <CallingStatusTd data={item.calling_status} />
+                       */}
+                      <td className="text-wrap">{item.email_address}</td>
                       {/* <td>
                         {item.linkedin.length ? (
                           <Linkify
