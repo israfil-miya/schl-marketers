@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import LineChart from '@/components/Charts/Line.chart';
+import { transparentize } from '@/utility/transparentize';
 
 interface ReportsCountGraphProps {
   isLoading: boolean;
@@ -17,6 +18,8 @@ interface LineChartData {
     backgroundColor: string;
     borderColor: string;
     borderWidth: number;
+    fill: boolean;
+    tension: number;
     type: 'line';
     order: number;
   }[];
@@ -45,9 +48,11 @@ const ReportsCountGraph: React.FC<ReportsCountGraphProps> = ({
         {
           label: 'Reports Count',
           data: Object.values(data),
-          backgroundColor: '#466cdb',
-          borderColor: 'black',
+          backgroundColor: transparentize('#4169e1'),
+          borderColor: '#1c318f',
           borderWidth: 2,
+          fill: true, // Fill the area under the line
+          tension: 0.3,
           type: 'line',
           order: 0,
         },

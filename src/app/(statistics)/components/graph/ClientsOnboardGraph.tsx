@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import BarChart from '@/components/Charts/Bar.chart';
-import generateBackgroundColors from '@/utility/generatecolorsforchart';
+import generateGraphColors from '@/utility/generatecolorsforchart';
+import { transparentize } from '@/utility/transparentize';
 
 interface ClientsOnboardGraphProps {
   isLoading: boolean;
@@ -15,8 +16,8 @@ interface BarChartData {
   datasets: {
     label: string;
     data: number[];
-    backgroundColor: string;
-    borderColor: string;
+    backgroundColor: string[];
+    borderColor: string[];
     borderWidth: number;
     type: 'bar';
     order: number;
@@ -41,14 +42,21 @@ const ClientsOnboardGraph: React.FC<ClientsOnboardGraphProps> = ({
     );
 
     // alternating colors
-    const evenYearColor = '#4169e1'; // Blue for even years
-    const oddYearColor = '#ffad33'; // Orange for odd years
+    const evenYearColor = transparentize('#4169e1'); // Blue for even years
+    const oddYearColor = transparentize('#ffad33'); // Orange for odd years
 
-    const backgroundColors = generateBackgroundColors(
+    const evenYearBorderColor = '#1c318f';
+    const oddYearBorderColor = '#a96500';
+
+    const graphColors = generateGraphColors(
       data,
       evenYearColor,
       oddYearColor,
-    ) as any;
+      evenYearBorderColor,
+      oddYearBorderColor,
+    );
+
+    console.log(graphColors);
 
     setGraphData({
       labels: dataLabels,
@@ -56,8 +64,8 @@ const ClientsOnboardGraph: React.FC<ClientsOnboardGraphProps> = ({
         {
           label: 'Clients onboard',
           data: Object.values(data),
-          backgroundColor: backgroundColors, // array of colors
-          borderColor: 'black',
+          backgroundColor: graphColors.bgColors, // array of colors
+          borderColor: graphColors.borderColors,
           borderWidth: 2,
           type: 'bar',
           order: 0,
