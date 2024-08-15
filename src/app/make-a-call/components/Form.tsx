@@ -35,7 +35,7 @@ const Form: React.FC<propsType> = (props) => {
     prospecting: false,
     prospectingStatus: '',
     followupDone: false,
-    newLead: false,
+    newLead: NewLeadQuery?.current || false,
   });
 
   const inputValidations = (reportData: any) => {
@@ -149,7 +149,7 @@ const Form: React.FC<propsType> = (props) => {
           prospecting: false,
           prospectingStatus: '',
           followupDone: false,
-          newLead: false,
+          newLead: NewLeadQuery?.current || false,
         });
         toast.success('New report added successfully');
       } else {
@@ -194,15 +194,6 @@ const Form: React.FC<propsType> = (props) => {
       }));
     }
   };
-
-  useEffect(() => {
-    if (NewLeadQuery.current) {
-      setReportData((prevData) => ({
-        ...prevData,
-        newLead: true,
-      }));
-    }
-  }, [NewLeadQuery.current]);
 
   return (
     <form onSubmit={handleAddNewReportFormSubmit}>
