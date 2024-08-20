@@ -32,6 +32,9 @@ const countDays = (startDate: string, endDate: string): number => {
 };
 
 const DailyStatusTable = () => {
+  const callsTargetConst = 60;
+  const leadsTargetConst = 10;
+
   const [reportsStatus, setReportsStatus] = useState<ReportsStatusState>({
     totalCalls: 0,
     totalTests: 0,
@@ -46,8 +49,8 @@ const DailyStatusTable = () => {
     toDate: getTodayDate(),
   });
 
-  const [callsTarget, setCallsTarget] = useState<number>(55);
-  const [leadsTarget, setLeadsTarget] = useState<number>(20);
+  const [callsTarget, setCallsTarget] = useState<number>(callsTargetConst);
+  const [leadsTarget, setLeadsTarget] = useState<number>(leadsTargetConst);
 
   async function getReportsStatus() {
     try {
@@ -69,8 +72,12 @@ const DailyStatusTable = () => {
 
       if (response.ok) {
         setReportsStatus(response.data);
-        setCallsTarget(55 * countDays(filters.fromDate, filters.toDate));
-        setLeadsTarget(20 * countDays(filters.fromDate, filters.toDate));
+        setCallsTarget(
+          callsTargetConst * countDays(filters.fromDate, filters.toDate),
+        );
+        setLeadsTarget(
+          leadsTargetConst * countDays(filters.fromDate, filters.toDate),
+        );
       } else {
         toast.error(response.data);
       }
@@ -91,8 +98,8 @@ const DailyStatusTable = () => {
     <div className="mt-6">
       <div className="flex flex-col sm:flex-row justify-center gap-1 mb-2 sm:gap-4 sm:mb-0 items-center px-2">
         <p className="font-mono inline-block text-destructive font-extrabold text-md sm:text-lg md:text-xl text-center uppercase">
-          <span className="underline">DAILY TARGET:</span> 55 CALLS (30 NORMAL,
-          25 RECALL), 20 LEADS, 10 TESTS/MONTH
+          <span className="underline">DAILY TARGET:</span> {callsTargetConst} CALLS
+          (20 NORMAL, 40 RECALL), {leadsTargetConst} LEADS, 10 TESTS/MONTH
         </p>
         <FilterButton
           isLoading={isLoading}

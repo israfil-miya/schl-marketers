@@ -26,7 +26,7 @@ const RnR = () => {
               A 10% commission will be applicable on amounts exceeding $100.
             </li>
             <li>
-              Each employee must make calls to 55 individuals daily, find 20 new
+              Each employee must make calls to 60 individuals daily, find 10 new
               leads, and follow up with those previously contacted.
             </li>
             <li>

@@ -204,7 +204,7 @@ const Table = () => {
 
       // setIsLoading(true);
 
-      const recallLimit = 30;
+      const recallLimit = 40;
 
       const lastCallDate =
         editedData.calling_date_history[
