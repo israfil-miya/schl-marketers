@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import FilterButton from './Filter';
-import { toast } from 'sonner';
-import fetchData from '@/utility/fetchdata';
-import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
 import CallingStatusTd from '@/components/ExtendableTd';
 import Linkify from '@/components/Linkify';
+import countDaysSinceLastCall from '@/utility/countdayspassed';
+import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
+import fetchData from '@/utility/fetchdata';
+import moment from 'moment-timezone';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import DeleteButton from './Delete';
 import EditButton from './Edit';
-import countDaysSinceLastCall from '@/utility/countdayspassed';
-import { useSession } from 'next-auth/react';
-import moment from 'moment-timezone';
+import FilterButton from './Filter';
 
 type ReportsState = {
   pagination: {
@@ -176,6 +176,7 @@ const Table = () => {
       // setIsLoading(true);
 
       const recallLimit = 40;
+      const lastCallDaysCap = 0;
 
       const lastCallDate =
         editedData.calling_date_history[
@@ -187,7 +188,7 @@ const Table = () => {
       );
 
       const isRecallAllowed =
-        daysPassedSinceLastCall > 15 ||
+        daysPassedSinceLastCall > lastCallDaysCap ||
         session?.user.role === 'super' ||
         session?.user.role === 'admin';
 
