@@ -1,23 +1,23 @@
 // @domain/api/report?action=...
 
-import { NextResponse } from 'next/server';
-import dbConnect from '@/utility/dbconnect';
-dbConnect();
-import getQuery from '@/utility/getapiquery';
-import Report from '@/models/Reports';
 import { auth } from '@/auth';
-import { headers } from 'next/headers';
 import Approval from '@/models/Approvals';
+import Report from '@/models/Reports';
+import dbConnect from '@/utility/dbconnect';
+import getQuery from '@/utility/getapiquery';
 import getTodayDate from '@/utility/gettodaysdate';
-import moment from 'moment-timezone';
 import {
-  createRegexQuery,
   addBooleanField,
   addIfDefined,
   addRegexField,
+  createRegexQuery,
   Query,
   RegexQuery,
 } from '@/utility/reportsfilterhelpers';
+import moment from 'moment-timezone';
+import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+dbConnect();
 
 async function handleEditReport(req: Request): Promise<{
   data: string | Object;
@@ -163,7 +163,7 @@ async function handleAddNewReport(req: Request): Promise<{
       is_lead: form_data.newLead,
       lead_withdrawn: false,
       regular_client: false,
-      test_given_date_history: form_data.testJob ? [form_data.testJob] : [],
+      test_given_date_history: form_data.testJob ? [form_data.callingDate] : [],
       onboard_date: '',
     };
 
