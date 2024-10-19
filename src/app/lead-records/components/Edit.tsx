@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface PropsType {
   leadData: { [key: string]: any };
@@ -146,7 +146,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                 </label>
                 <input
                   disabled
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   value={editedData.calling_date}
                   type="date"
                   name="calling_date"
@@ -162,7 +162,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Followup Date
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   value={editedData.followup_date}
                   name="followup_date"
                   onChange={handleChange}
@@ -178,7 +178,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Country
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="country"
                   value={editedData.country}
                   onChange={handleChange}
@@ -200,7 +200,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   </span>
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="website"
                   value={editedData.website}
                   onChange={handleChange}
@@ -216,7 +216,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Category
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="category"
                   value={editedData.category}
                   onChange={handleChange}
@@ -232,7 +232,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Company
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="company_name"
                   value={editedData.company_name}
                   onChange={handleChange}
@@ -248,7 +248,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Contact Person
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="contact_person"
                   value={editedData.contact_person}
                   onChange={handleChange}
@@ -264,7 +264,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Contact Number
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="contact_number"
                   value={editedData.contact_number}
                   onChange={handleChange}
@@ -280,7 +280,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Designation
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="designation"
                   value={editedData.designation}
                   onChange={handleChange}
@@ -296,7 +296,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                   Email address
                 </label>
                 <input
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="email_address"
                   value={editedData.email_address}
                   onChange={handleChange}
@@ -313,7 +313,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                 </label>
                 <textarea
                   rows={5}
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   name="calling_status"
                   value={editedData.calling_status}
                   onChange={handleChange}
@@ -335,7 +335,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                     </span>
                   </label>
                   <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     type="text"
                     name="linkedin"
                     value={editedData.linkedin}
@@ -361,7 +361,7 @@ const EditButton: React.FC<PropsType> = (props) => {
                       }
                       // defaultValue={''}
                       required
-                      className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     >
                       <option value={''} className="text-gray-400">
                         Select prospect status

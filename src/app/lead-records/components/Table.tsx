@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import FilterButton from './Filter';
-import { toast } from 'sonner';
-import fetchData from '@/utility/fetchdata';
-import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
 import CallingStatusTd from '@/components/ExtendableTd';
 import Linkify from '@/components/Linkify';
+import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
+import fetchData from '@/utility/fetchdata';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import DeleteButton from './Delete';
 import EditButton from './Edit';
+import FilterButton from './Filter';
 import WithdrawLeadButton from './Withdraw';
-import { useSession } from 'next-auth/react';
 
 type LeadsState = {
   pagination: {
@@ -352,7 +352,7 @@ const Table = () => {
               onClick={handlePrevious}
               disabled={page === 1 || pageCount === 0 || isLoading}
               type="button"
-              className="inline-flex items-center px-4 py-2 text-sm bg-gray-200 text-gray-700 border border-gray-200 rounded-s-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="inline-flex items-center px-4 py-2 text-sm bg-gray-50 text-gray-700 border border-gray-200 rounded-s-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -381,7 +381,7 @@ const Table = () => {
               onClick={handleNext}
               disabled={page === pageCount || pageCount === 0 || isLoading}
               type="button"
-              className="inline-flex items-center px-4 py-2 text-sm bg-gray-200 text-gray-700 border border-gray-200 rounded-e-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="inline-flex items-center px-4 py-2 text-sm bg-gray-50 text-gray-700 border border-gray-200 rounded-e-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             >
               Next
               <svg
@@ -404,7 +404,7 @@ const Table = () => {
             onChange={(e) => setItemPerPage(parseInt(e.target.value))}
             // defaultValue={30}
             required
-            className="appearance-none bg-gray-200 text-gray-700 border border-gray-200 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none bg-gray-50 text-gray-700 border border-gray-200 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           >
             <option value={30}>30</option>
             <option value={50}>50</option>

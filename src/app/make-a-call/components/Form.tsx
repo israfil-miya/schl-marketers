@@ -1,9 +1,9 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
 import fetchData from '@/utility/fetchdata';
-import { useSearchParams } from 'next/navigation';
-import isValidUrl from '@/utility/validurlcheck';
 import isValidMail from '@/utility/validemailcheck';
+import isValidUrl from '@/utility/validurlcheck';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 import { toast } from 'sonner';
 
@@ -214,7 +214,7 @@ const Form: React.FC<propsType> = (props) => {
 
           <input
             disabled
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             value={props.todayDate}
             type="date"
             name="callingDate"
@@ -231,7 +231,7 @@ const Form: React.FC<propsType> = (props) => {
           </label>
           <input
             required={!reportData.followupDone}
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             value={reportData.followupDate}
             name="followupDate"
             onChange={handleChange}
@@ -246,7 +246,7 @@ const Form: React.FC<propsType> = (props) => {
             Country*
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="country"
             value={reportData.country}
             onChange={handleChange}
@@ -269,7 +269,7 @@ const Form: React.FC<propsType> = (props) => {
             </span>
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="website"
             value={reportData.website}
             onChange={handleChange}
@@ -286,7 +286,7 @@ const Form: React.FC<propsType> = (props) => {
             Category*
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="category"
             value={reportData.category}
             onChange={handleChange}
@@ -303,7 +303,7 @@ const Form: React.FC<propsType> = (props) => {
             Company*
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="company"
             value={reportData.company}
             onChange={handleChange}
@@ -320,7 +320,7 @@ const Form: React.FC<propsType> = (props) => {
             Contact Person*
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="contactPerson"
             value={reportData.contactPerson}
             onChange={handleChange}
@@ -337,7 +337,7 @@ const Form: React.FC<propsType> = (props) => {
             Contact Number
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="contactNumber"
             value={reportData.contactNumber}
             onChange={handleChange}
@@ -353,7 +353,7 @@ const Form: React.FC<propsType> = (props) => {
             Designation*
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="designation"
             value={reportData.designation}
             onChange={handleChange}
@@ -376,7 +376,7 @@ const Form: React.FC<propsType> = (props) => {
             </span>
           </label>
           <input
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="email"
             value={reportData.email}
             onChange={handleChange}
@@ -393,7 +393,7 @@ const Form: React.FC<propsType> = (props) => {
           </label>
           <textarea
             rows={5}
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="status"
             value={reportData.status}
             onChange={handleChange}
@@ -415,7 +415,7 @@ const Form: React.FC<propsType> = (props) => {
               </span>
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               name="linkedin"
               value={reportData.linkedin}
@@ -441,7 +441,7 @@ const Form: React.FC<propsType> = (props) => {
                 }
                 // defaultValue={''}
                 required
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               >
                 <option value={''} className="text-gray-400">
                   Select prospect status

@@ -1,8 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
 import fetchData from '@/utility/fetchdata';
-import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ChangePasswordDataState {
   username: string;
@@ -117,7 +117,7 @@ const Form: React.FC = (props) => {
           </label>
           <input
             disabled
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="username"
             value={changePasswordData.username}
             onChange={handleChange}
@@ -137,7 +137,7 @@ const Form: React.FC = (props) => {
           <input
             role="presentation"
             autoComplete="off"
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="oldPassword"
             value={changePasswordData.oldPassword}
             onChange={handleChange}
@@ -157,7 +157,7 @@ const Form: React.FC = (props) => {
           <input
             role="presentation"
             autoComplete="off"
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="newPassword"
             value={changePasswordData.newPassword}
             onChange={handleChange}
@@ -177,7 +177,7 @@ const Form: React.FC = (props) => {
           <input
             role="presentation"
             autoComplete="off"
-            className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             name="confirmPassword"
             value={changePasswordData.confirmPassword}
             onChange={handleChange}

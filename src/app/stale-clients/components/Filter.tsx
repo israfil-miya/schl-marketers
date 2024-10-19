@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
 import cn from '@/utility/cn';
+import React, { useRef, useState } from 'react';
 
 interface PropsType {
   className?: string;
@@ -130,7 +130,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
 
                   <div className="inline-flex w-full" role="group">
                     <input
-                      className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-s-md py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded-s-md py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                       name="fromDate"
                       value={filters.fromDate}
                       onChange={handleChange}
@@ -140,7 +140,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
                       <b>to</b>
                     </span>
                     <input
-                      className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-e-md py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded-e-md py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                       name="toDate"
                       value={filters.toDate}
                       onChange={handleChange}
@@ -154,7 +154,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
                     Country Name
                   </label>
                   <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     name="country"
                     value={filters.country}
                     onChange={handleChange}
@@ -166,7 +166,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
                     Category
                   </label>
                   <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     name="category"
                     value={filters.category}
                     onChange={handleChange}
@@ -178,7 +178,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
                     Company Name
                   </label>
                   <input
-                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     name="companyName"
                     value={filters.companyName}
                     onChange={handleChange}
@@ -212,7 +212,7 @@ const FilterButton: React.FC<PropsType> = (props) => {
                   name="generalSearchString"
                   value={filters.generalSearchString}
                   onChange={handleChange}
-                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 />
               </div>
             </div>
