@@ -299,7 +299,7 @@ async function handleGetAllReports(req: Request): Promise<{
     const searchQuery: Query = { ...query };
 
     let sortQuery: Record<string, 1 | -1> = {
-      createdAt: -1,
+      createdAt: 1,
     };
 
     // Sorting by followup date (ascending) if followup is pending and not a regular client (/pending-followups)
@@ -311,7 +311,7 @@ async function handleGetAllReports(req: Request): Promise<{
       sortQuery = {
         hasFollowupDate: 1, // Sort by presence of followup_date first (0 for missing, 1 for present)
         followup_date: 1, // Then sort by followup_date ascending
-        createdAt: -1, // Finally, sort by createdAt descending
+        createdAt: 1, // Finally, sort by createdAt descending
       };
     }
 
