@@ -1,7 +1,6 @@
 'use client';
-import fetchData from '@/utility/fetchdata';
-import isValidMail from '@/utility/validemailcheck';
-import isValidUrl from '@/utility/validurlcheck';
+import fetchData from '@/utility/fetch';
+import { isValidHttpUrls, isValidMails } from '@/utility/validation';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -41,7 +40,7 @@ const Form: React.FC<propsType> = (props) => {
   const inputValidations = (reportData: any) => {
     const containsUrl = (text: string) => {
       const words = text.split(' ');
-      return words.some((word) => isValidUrl(word));
+      return words.some((word) => isValidHttpUrls(word));
     };
 
     // check if all required fields are filled
@@ -58,12 +57,12 @@ const Form: React.FC<propsType> = (props) => {
     }
 
     // check if website and linkedin are valid urls
-    if (reportData.website && !isValidUrl(reportData.website)) {
+    if (reportData.website && !isValidHttpUrls(reportData.website)) {
       toast.error('Invalid website URL');
       return false;
     }
 
-    if (reportData.linkedin && !isValidUrl(reportData.linkedin)) {
+    if (reportData.linkedin && !isValidHttpUrls(reportData.linkedin)) {
       toast.error('Invalid linkedin URL');
       return false;
     }
@@ -95,7 +94,7 @@ const Form: React.FC<propsType> = (props) => {
     }
 
     // check if email is valid
-    if (reportData.email && !isValidMail(reportData.email)) {
+    if (reportData.email && !isValidMails(reportData.email)) {
       toast.error('Invalid email address');
       return false;
     }

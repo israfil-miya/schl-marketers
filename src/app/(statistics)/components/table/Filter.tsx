@@ -1,7 +1,7 @@
 'use client';
 
 import cn from '@/utility/cn';
-import getTodayDate from '@/utility/gettodaysdate';
+import { getTodayDate } from '@/utility/date';
 import React, { useRef, useState } from 'react';
 
 interface PropsType {

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import ReportsCountGraph from './ReportsCountGraph';
-import ClientsOnboardGraph from './ClientsOnboardGraph';
-import TestOrdersTrendGraph from './TestOrdersTrendGraph';
-import fetchData from '@/utility/fetchdata';
-import { toast } from 'sonner';
+import fetchData from '@/utility/fetch';
 import { useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import ClientsOnboardGraph from './ClientsOnboardGraph';
+import ReportsCountGraph from './ReportsCountGraph';
+import TestOrdersTrendGraph from './TestOrdersTrendGraph';
 
 const Graphs = () => {
   const { data: session } = useSession();

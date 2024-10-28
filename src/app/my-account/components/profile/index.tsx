@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import Overview from './Overview';
+import fetchData from '@/utility/fetch';
 import { useSession } from 'next-auth/react';
-import fetchData from '@/utility/fetchdata';
+import React, { useEffect } from 'react';
 import { toast } from 'sonner';
+import Overview from './Overview';
 import SalaryStructure from './SalaryStructure';
 
 interface ProfilePropsTypes {

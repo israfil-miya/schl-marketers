@@ -1,9 +1,31 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/utility/dbconnect';
-dbConnect();
 import Notice from '@/models/Notices';
-import getQuery from '@/utility/getapiquery';
+import dbConnect from '@/utility/dbConnect';
+import {
+  addIfDefined,
+  addRegexField,
+  createRegexQuery,
+} from '@/utility/filterHelpers';
+import getQuery from '@/utility/getApiQuery';
 import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+dbConnect();
+
+export interface RegexQuery {
+  $regex: string;
+  $options: string;
+}
+
+export interface Query {
+  channel?: RegexQuery;
+  title?: RegexQuery;
+  notice_no?: RegexQuery;
+  updatedAt?: { $gte?: string; $lte?: string };
+}
+
+export type RegexFields = Extract<
+  keyof Query,
+  'channel' | 'title' | 'notice_no'
+>;
 
 async function handleGetAllNotices(req: Request): Promise<{
   data: string | Object;
@@ -15,12 +37,7 @@ async function handleGetAllNotices(req: Request): Promise<{
     const isFilter: boolean = headers().get('filtered') === 'true';
     const paginated: boolean = headers().get('paginated') === 'true';
 
-    type Query = {
-      channel?: string;
-      title?: { $regex: string; $options: string };
-      notice_no?: { $regex: string; $options: string };
-      updatedAt?: { $gte?: string; $lte?: string };
-    };
+    const filters = await req.json();
 
     type Filters = {
       channel: string;
@@ -30,24 +47,24 @@ async function handleGetAllNotices(req: Request): Promise<{
       toDate: string;
     };
 
-    let filters = await req.json();
-
-    let { channel, title, noticeNo, fromDate, toDate }: Filters = filters;
+    const { channel, title, noticeNo, fromDate, toDate }: Filters = filters;
 
     let query: Query = {};
 
-    if (channel) query.channel = channel;
-    if (noticeNo) query.notice_no = { $regex: `^${noticeNo}$`, $options: 'i' };
-    if (title) query.title = { $regex: title, $options: 'i' };
+    addRegexField(query, 'channel', channel?.trim()?.toLowerCase());
+    addRegexField(query, 'title', title?.trim()?.toLowerCase());
+    addRegexField(query, 'notice_no', noticeNo?.trim(), true);
 
     if (fromDate || toDate) {
       query.updatedAt = query.updatedAt || {};
-      if (fromDate) {
-        query.updatedAt.$gte = fromDate;
-      }
-      if (toDate) {
-        query.updatedAt.$lte = toDate;
-      }
+      query.updatedAt = {
+        ...(fromDate && { $gte: fromDate }),
+        ...(toDate && { $lte: toDate }),
+      };
+    }
+
+    if (!fromDate && !toDate) {
+      delete query.updatedAt;
     }
 
     let searchQuery: Query = { ...query };

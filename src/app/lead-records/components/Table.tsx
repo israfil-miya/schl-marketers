@@ -2,8 +2,8 @@
 
 import CallingStatusTd from '@/components/ExtendableTd';
 import Linkify from '@/components/Linkify';
-import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
-import fetchData from '@/utility/fetchdata';
+import { YYYY_MM_DD_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/date';
+import fetchData from '@/utility/fetch';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
@@ -80,6 +80,7 @@ const Table = () => {
 
       if (response.ok) {
         setLeads(response.data);
+        setIsFiltered(false);
       } else {
         toast.error(response.data);
       }
@@ -103,7 +104,7 @@ const Table = () => {
           filtered: true,
           paginated: true,
           item_per_page: itemPerPage,
-          page,
+          page: !isFiltered ? 1 : page,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

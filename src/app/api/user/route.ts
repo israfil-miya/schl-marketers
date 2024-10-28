@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/utility/dbconnect';
-dbConnect();
 import User from '@/models/Users';
-import getQuery from '@/utility/getapiquery';
+import dbConnect from '@/utility/dbConnect';
+import getQuery from '@/utility/getApiQuery';
+import { NextResponse } from 'next/server';
+dbConnect();
 
 async function handleLogin(req: Request): Promise<{
   data: string | Object;

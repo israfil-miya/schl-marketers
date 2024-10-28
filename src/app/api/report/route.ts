@@ -1,23 +1,58 @@
-// @domain/api/report?action=...
-
 import { auth } from '@/auth';
 import Approval from '@/models/Approvals';
 import Report from '@/models/Reports';
-import dbConnect from '@/utility/dbconnect';
-import getQuery from '@/utility/getapiquery';
-import getTodayDate from '@/utility/gettodaysdate';
+import { getTodayDate } from '@/utility/date';
+import dbConnect from '@/utility/dbConnect';
 import {
   addBooleanField,
   addIfDefined,
   addRegexField,
   createRegexQuery,
-  Query,
-  RegexQuery,
-} from '@/utility/reportsfilterhelpers';
+} from '@/utility/filterHelpers';
+import getQuery from '@/utility/getApiQuery';
 import moment from 'moment-timezone';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 dbConnect();
+
+export interface RegexQuery {
+  $regex: string;
+  $options: string;
+}
+
+export interface Query {
+  country?: RegexQuery;
+  company_name?: RegexQuery;
+  category?: RegexQuery;
+  marketer_name?:
+    | RegexQuery
+    | { [key: string]: RegexQuery | string | undefined };
+  // is_test?: boolean;
+  is_prospected?: boolean;
+  is_lead?: boolean;
+  followup_done?: boolean;
+  regular_client?: boolean;
+  permanent_client?: boolean;
+  onboard_date?: string | { [key: string]: RegexQuery | string | undefined };
+  prospect_status?: RegexQuery;
+  calling_date_history?: { [key: string]: any };
+  test_given_date_history?: { [key: string]: any };
+  $or?: { [key: string]: RegexQuery }[];
+}
+
+export type BooleanFields = Extract<
+  keyof Query,
+  | 'is_test'
+  | 'is_prospected'
+  | 'is_lead'
+  | 'followup_done'
+  | 'regular_client'
+  | 'permanent_client'
+>;
+export type RegexFields = Extract<
+  keyof Query,
+  'country' | 'company_name' | 'category' | 'marketer_name' | 'prospect_status'
+>;
 
 async function handleEditReport(req: Request): Promise<{
   data: string | Object;
@@ -215,6 +250,24 @@ async function handleGetAllReports(req: Request): Promise<{
 
     const filters = await req.json();
 
+    type Filters = {
+      country: string;
+      companyName: string;
+      category: string;
+      marketerName: string;
+      fromDate: string;
+      toDate: string;
+      test: boolean;
+      prospect: boolean;
+      onlyLead: boolean;
+      followupDone: boolean;
+      regularClient: boolean;
+      staleClient: boolean;
+      prospectStatus: string;
+      generalSearchString: string;
+      show: string;
+    };
+
     const {
       country,
       companyName,
@@ -231,15 +284,15 @@ async function handleGetAllReports(req: Request): Promise<{
       prospectStatus,
       generalSearchString,
       show,
-    } = filters;
+    }: Filters = filters;
 
     const query: Query = {};
 
-    addRegexField(query, 'country', country);
-    addRegexField(query, 'company_name', companyName);
-    addRegexField(query, 'category', category);
-    addRegexField(query, 'marketer_name', marketerName, true);
-    addRegexField(query, 'prospect_status', prospectStatus, true);
+    addRegexField(query, 'country', country?.trim()?.toLowerCase());
+    addRegexField(query, 'company_name', companyName?.trim()?.toLowerCase());
+    addRegexField(query, 'category', category?.trim()?.toLowerCase());
+    addRegexField(query, 'marketer_name', marketerName?.trim(), true);
+    addRegexField(query, 'prospect_status', prospectStatus?.trim(), true);
 
     addBooleanField(query, 'is_prospected', prospect);
 

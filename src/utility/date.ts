@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 export const YYYY_MM_DD_to_DD_MM_YY = (dateString: string) => {
   if (!dateString) return '';
   const [year, month, day] = dateString.split('-');
@@ -12,4 +14,10 @@ export const ISO_to_DD_MM_YY = (isoDate: string) => {
   const year = date.getFullYear().toString();
 
   return `${day}-${month}-${year}`;
+};
+
+export const getTodayDate = () => moment().format('YYYY-MM-DD');
+
+export const getTodayDate_DD_MM_YYYY = () => {
+  return moment().format('DD-MM-YYYY');
 };

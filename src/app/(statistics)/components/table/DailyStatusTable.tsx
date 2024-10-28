@@ -1,10 +1,10 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import fetchData from '@/utility/fetchdata';
-import { toast } from 'sonner';
-import { useSession } from 'next-auth/react';
-import getTodayDate from '@/utility/gettodaysdate';
+import { getTodayDate } from '@/utility/date';
+import fetchData from '@/utility/fetch';
 import moment from 'moment-timezone';
+import { useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import FilterButton from './Filter';
 
 interface ReportsStatusState {
@@ -98,8 +98,8 @@ const DailyStatusTable = () => {
     <div className="mt-6">
       <div className="flex flex-col sm:flex-row justify-center gap-1 mb-2 sm:gap-4 sm:mb-0 items-center px-2">
         <p className="font-mono inline-block text-destructive font-extrabold text-md sm:text-lg md:text-xl text-center uppercase">
-          <span className="underline">DAILY TARGET:</span> {callsTargetConst} CALLS
-          (20 NORMAL, 40 RECALL), {leadsTargetConst} LEADS, 10 TESTS/MONTH
+          <span className="underline">DAILY TARGET:</span> {callsTargetConst}{' '}
+          CALLS (20 NORMAL, 40 RECALL), {leadsTargetConst} LEADS, 10 TESTS/MONTH
         </p>
         <FilterButton
           isLoading={isLoading}

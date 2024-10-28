@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import BarChart from '@/components/Charts/Bar.chart';
+import generateGraphColors from '@/utility/genChartColors';
 import { transparentize } from '@/utility/transparentize';
-import generateGraphColors from '@/utility/generatecolorsforchart';
+import React, { useEffect, useState } from 'react';
 
 interface TestOrdersTrendGraphProps {
   isLoading: boolean;

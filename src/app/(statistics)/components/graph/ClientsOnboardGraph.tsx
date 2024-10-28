@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import BarChart from '@/components/Charts/Bar.chart';
-import generateGraphColors from '@/utility/generatecolorsforchart';
+import generateGraphColors from '@/utility/genChartColors';
 import { transparentize } from '@/utility/transparentize';
+import React, { useEffect, useState } from 'react';
 
 interface ClientsOnboardGraphProps {
   isLoading: boolean;

@@ -1,5 +1,5 @@
 'use client';
-import fetchData from '@/utility/fetchdata';
+import fetchData from '@/utility/fetch';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';

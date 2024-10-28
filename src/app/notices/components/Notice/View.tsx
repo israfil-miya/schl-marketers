@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ISO_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/dateconvertion';
+import { ISO_to_DD_MM_YY as convertToDDMMYYYY } from '@/utility/date';
+import fetchData from '@/utility/fetch';
 import moment from 'moment-timezone';
-import fetchData from '@/utility/fetchdata';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ViewNoticeProps {
   notice_no: string;
