@@ -99,7 +99,7 @@ const DailyStatusTable = () => {
       <div className="flex flex-col sm:flex-row justify-center gap-1 mb-2 sm:gap-4 sm:mb-0 items-center px-2">
         <p className="font-mono inline-block text-destructive font-extrabold text-md sm:text-lg md:text-xl text-center uppercase">
           <span className="underline">DAILY TARGET:</span> {callsTargetConst}{' '}
-          CALLS (20 NORMAL, 40 RECALL), {leadsTargetConst} LEADS, 10 TESTS/MONTH
+          CALLS (60 Recall), {leadsTargetConst} LEADS, 10 TESTS/MONTH
         </p>
         <FilterButton
           isLoading={isLoading}
