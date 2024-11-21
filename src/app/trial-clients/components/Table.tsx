@@ -205,7 +205,7 @@ const Table = () => {
 
       // setIsLoading(true);
 
-      const recallLimit = 40;
+      const recallLimit = 60;
       const lastCallDaysCap = 0;
 
       const lastCallDate =
