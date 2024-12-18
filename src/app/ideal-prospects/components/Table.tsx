@@ -137,7 +137,8 @@ const Table = () => {
 
   async function deleteReport(reportId: string, reqBy: string) {
     try {
-      let url: string = process.env.NEXT_PUBLIC_PORTAL_URL + '/api/approval';
+      let url: string =
+        process.env.NEXT_PUBLIC_PORTAL_URL + '/api/approval?action=new-request';
       let options: {} = {
         method: 'POST',
         headers: {
